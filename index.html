@@ -1,0 +1,3753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Club Pet Shield · Programa de fidelización</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   CLUB PET SHIELD — estilos
+   Paleta: morado + beige + dorado + blanco (identidad Pet Shield).
+   Tipografía: Fredoka (display, redonda y amigable — mascotas)
+               + Inter (texto y datos).
+   ========================================================= */
+
+:root{
+  --purple-900:#4B1F6F;
+  --purple-700:#6A3294;
+  --purple-600:#7C46A8;
+  --purple-500:#8E5CB5;
+  --purple-100:#EFE2F7;
+  --beige-50:#F5EBDD;
+  --beige:#E8D8C3;
+  --gold-600:#AD8420;
+  --gold-500:#D4AF37;
+  --gold-400:#E8D28A;
+  --gold-100:#F8EFD6;
+  --gold-50:#FCF7EA;
+  --white:#FFFFFF;
+  --ink:#3A2A1F;
+  --ink-soft:#7A6A57;
+  --gray-200:#E3D6BF;
+  --gray-100:#F2E9DA;
+  --success:#3FA772;
+  --danger:#C2554B;
+  --radius-lg:26px;
+  --radius-md:16px;
+  --radius-sm:10px;
+  --shadow-card:0 12px 30px -12px rgba(75,31,111,0.24);
+  --shadow-soft:0 4px 14px -6px rgba(75,31,111,0.18);
+  --font-display:'Fredoka', system-ui, sans-serif;
+  --font-body:'Inter', system-ui, sans-serif;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-body);
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 0%, var(--purple-100) 0%, transparent 45%),
+    radial-gradient(circle at 100% 15%, var(--gold-100) 0%, transparent 40%),
+    var(--beige-50);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display); margin:0; color:var(--purple-900);}
+p{margin:0;}
+button{font-family:var(--font-body); cursor:pointer;}
+input,select{font-family:var(--font-body);}
+:focus-visible{outline:3px solid var(--gold-400); outline-offset:2px;}
+
+.paw-bg{
+  position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden;
+}
+.paw-bg span{
+  position:absolute; font-size:34px; opacity:0.06; transform:rotate(-15deg);
+}
+
+/* ---------- Topbar ---------- */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px clamp(16px,4vw,48px);
+  background:var(--white);
+  box-shadow:0 2px 18px -8px rgba(75,31,111,0.18);
+  position:sticky; top:0; z-index:50;
+  flex-wrap:wrap; gap:12px;
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand-mark{
+  width:46px; height:46px; border-radius:14px;
+  background:linear-gradient(155deg,var(--purple-700),var(--purple-900));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow-soft);
+  flex-shrink:0;
+}
+.brand-mark svg{width:26px; height:26px;}
+.brand-text h1{font-size:20px; letter-spacing:0.5px; line-height:1;}
+.brand-text span{font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:1.5px;}
+
+.nav-tabs{display:flex; gap:6px; background:var(--gray-100); padding:5px; border-radius:999px;}
+.nav-tabs button{
+  border:none; background:transparent; padding:10px 18px; border-radius:999px;
+  font-weight:600; font-size:14px; color:var(--ink-soft);
+  transition:all .2s ease;
+  display:flex; align-items:center; gap:6px;
+}
+.nav-tabs button.active{
+  background:var(--purple-700); color:var(--white);
+  box-shadow:var(--shadow-soft);
+}
+.nav-tabs button:hover:not(.active){color:var(--purple-700); background:var(--white);}
+
+main{max-width:1180px; margin:0 auto; padding:clamp(18px,4vw,40px);}
+.view{display:none; animation:fadeUp .35s ease;}
+.view.active{display:block;}
+@keyframes fadeUp{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------- Hero ---------- */
+.hero{
+  display:flex; align-items:center; justify-content:space-between; gap:28px;
+  background:linear-gradient(120deg,var(--purple-700) 0%, var(--purple-900) 100%);
+  border-radius:var(--radius-lg);
+  padding:clamp(24px,4vw,42px);
+  color:var(--white);
+  margin-bottom:26px;
+  position:relative; overflow:hidden;
+}
+.hero::before{
+  content:"🐾"; position:absolute; font-size:220px; opacity:0.08; right:-30px; top:-50px; transform:rotate(18deg);
+}
+.hero-text h2{color:var(--white); font-size:clamp(24px,3.4vw,34px);}
+.hero-text p{color:#F0E4D0; margin-top:8px; max-width:460px; font-size:15px;}
+.hero-badge{
+  background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35);
+  padding:6px 14px; border-radius:999px; font-size:12px; font-weight:600;
+  display:inline-flex; align-items:center; gap:6px; margin-bottom:12px;
+}
+
+/* ---------- Layout grid registro ---------- */
+.register-grid{
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; align-items:start;
+}
+.register-grid .form-panel{grid-column:1 / span 2;}
+@media (max-width:980px){
+  .register-grid{grid-template-columns:1fr;}
+  .register-grid .form-panel{grid-column:1;}
+}
+
+.card{
+  background:var(--white); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-card); padding:24px;
+}
+
+.form-section{margin-bottom:22px;}
+.form-section-head{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+.step-badge{
+  width:30px; height:30px; border-radius:50%; background:var(--purple-100); color:var(--purple-700);
+  display:flex; align-items:center; justify-content:center; font-weight:700; font-family:var(--font-display); flex-shrink:0;
+}
+.form-section-head h3{font-size:16px; color:var(--purple-800,var(--purple-900));}
+
+.field-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+@media (max-width:560px){.field-grid{grid-template-columns:1fr;}}
+
+.field label{
+  display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:6px;
+}
+.field input, .field select{
+  width:100%; padding:11px 13px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200);
+  background:var(--white); font-size:14px; color:var(--ink); transition:border-color .15s;
+}
+.field input:focus, .field select:focus{border-color:var(--purple-500);}
+.field.error input, .field.error select{border-color:var(--danger);}
+.field-error-msg{color:var(--danger); font-size:11.5px; margin-top:4px; display:none;}
+.field.error .field-error-msg{display:block;}
+
+.consent-box{
+  display:flex; gap:10px; align-items:flex-start; background:var(--gold-100);
+  padding:14px 16px; border-radius:var(--radius-md); font-size:13px; color:var(--ink); margin-top:6px;
+}
+.consent-box input{margin-top:3px; width:16px; height:16px; accent-color:var(--purple-700); flex-shrink:0;}
+
+.btn{
+  border:none; border-radius:999px; padding:14px 22px; font-weight:700; font-size:14.5px;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:transform .15s, box-shadow .15s;
+}
+.btn:active{transform:scale(0.97);}
+.btn-primary{
+  background:linear-gradient(120deg,var(--purple-700),var(--gold-500));
+  color:var(--white); box-shadow:0 10px 22px -8px rgba(212,175,55,0.5); width:100%;
+}
+.btn-primary:hover{box-shadow:0 14px 26px -8px rgba(212,175,55,0.65);}
+.btn-secondary{background:var(--purple-100); color:var(--purple-700);}
+.btn-secondary:hover{background:var(--purple-500); color:var(--white);}
+.btn-danger{background:#F6DEDB; color:var(--danger);}
+.btn-danger:hover{background:var(--danger); color:var(--white);}
+.btn-ghost{background:transparent; color:var(--purple-700); border:1.5px solid var(--purple-100);}
+.btn-sm{padding:8px 14px; font-size:12.5px; border-radius:10px;}
+
+/* ---------- Panel de bienvenida / tarjeta ---------- */
+.welcome-panel{position:sticky; top:96px;}
+.welcome-panel .card{
+  background:linear-gradient(160deg,var(--white) 60%, var(--gold-100));
+  text-align:center;
+}
+.welcome-icon{font-size:34px; margin-bottom:8px;}
+.welcome-panel h3{font-size:17px; margin-bottom:4px;}
+.welcome-panel p{font-size:13px; color:var(--ink-soft); margin-bottom:16px;}
+.client-code-box{
+  background:var(--purple-900); color:var(--white); border-radius:var(--radius-md);
+  padding:14px; margin-bottom:18px;
+}
+.client-code-box span{display:block; font-size:11px; letter-spacing:1px; opacity:0.75; text-transform:uppercase;}
+.client-code-box strong{font-family:var(--font-display); font-size:22px; letter-spacing:1px;}
+
+.stamp-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0;}
+.stamp{
+  width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:16px; border:2px dashed var(--gray-200); color:var(--gray-200); background:var(--white);
+  transition:transform .25s, background .25s, border-color .25s, color .25s;
+}
+.picker-hint{
+  font-size:12.5px; color:var(--ink-soft); background:var(--purple-100); border-radius:var(--radius-md);
+  padding:10px 14px; margin-bottom:12px;
+}
+.stamp-row button.stamp{
+  cursor:pointer; padding:0; font-family:var(--font-body); appearance:none;
+}
+.stamp-row button.stamp:hover:not(.filled){
+  border-color:var(--purple-500); color:var(--purple-500); background:var(--purple-100);
+}
+.stamp.filled{
+  border:2px solid var(--gold-500); background:linear-gradient(135deg,var(--purple-700),var(--gold-500));
+  color:var(--white); transform:scale(1.05);
+  box-shadow:0 4px 10px -3px rgba(212,175,55,0.55);
+  animation:stampPop .35s ease;
+}
+@keyframes stampPop{0%{transform:scale(0.4) rotate(-25deg); opacity:0;} 70%{transform:scale(1.15) rotate(6deg);} 100%{transform:scale(1.05) rotate(0);}}
+
+.progress-track{
+  height:10px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin:10px 0;
+}
+.progress-fill{
+  height:100%; border-radius:999px; background:linear-gradient(90deg,var(--purple-700),var(--gold-500));
+  transition:width .4s ease;
+}
+.progress-caption{font-size:12.5px; color:var(--ink-soft);}
+.complete-banner{
+  margin-top:14px; background:linear-gradient(120deg,var(--gold-400),var(--gold-500)); color:var(--purple-900);
+  padding:12px; border-radius:var(--radius-md); font-weight:700; font-size:13px; display:none;
+}
+.complete-banner.show{display:block;}
+
+.hidden{display:none !important;}
+
+/* ---------- Lookup ---------- */
+.lookup-search{
+  display:flex; gap:10px; max-width:520px; margin:0 auto 26px auto; flex-wrap:wrap;
+}
+.lookup-search input{flex:1; min-width:220px;}
+.lookup-result{max-width:460px; margin:0 auto;}
+.result-pet-row{
+  display:flex; justify-content:space-between; gap:10px; margin:14px 0; font-size:13.5px;
+}
+.result-pet-row div span{display:block; font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.5px;}
+.result-pet-row div strong{font-family:var(--font-body); font-size:14.5px; color:var(--ink);}
+.empty-state{
+  text-align:center; color:var(--ink-soft); padding:34px 10px; font-size:14px;
+}
+.empty-state .emoji{font-size:38px; display:block; margin-bottom:10px;}
+
+.quick-results{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; margin-top:22px;
+}
+.quick-card{
+  background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-soft); padding:18px;
+}
+.quick-card-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:4px;}
+.quick-card-head strong{font-size:15px;}
+.quick-pet{display:block; font-size:12px; color:var(--ink-soft); margin-top:2px;}
+.quick-card .stamp-row{margin:14px 0; gap:5px;}
+.quick-card .stamp{width:26px; height:26px; font-size:11px;}
+.quick-card-actions{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:6px; flex-wrap:wrap;}
+.quick-complete{font-size:12px; font-weight:700; color:var(--gold-500);}
+.quick-purchase-row{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
+.quick-purchase-row label{display:block; font-size:11px; font-weight:600; color:var(--ink-soft); margin-bottom:4px;}
+.quick-purchase-row input, .quick-purchase-row select{width:100%; padding:9px 10px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200); font-size:13px;}
+.quick-amount-display{
+  margin-top:10px; text-align:center; font-size:13px; color:var(--ink-soft);
+  background:var(--beige-50); border-radius:var(--radius-sm); padding:8px;
+}
+.quick-amount-display strong{color:var(--purple-900); font-size:15px;}
+.quick-btn-row{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
+
+/* ---------- Admin ---------- */
+.gate-wrap{max-width:400px; margin:60px auto; text-align:center;}
+.gate-wrap .lock-icon{
+  width:64px; height:64px; border-radius:50%; background:var(--purple-100); color:var(--purple-700);
+  display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 16px auto;
+}
+.gate-error{color:var(--danger); font-size:13px; margin-top:10px; display:none; font-weight:600;}
+.gate-error.show{display:block;}
+
+.stats-row{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:22px;}
+@media (max-width:700px){.stats-row{grid-template-columns:1fr;}}
+.stat-card{
+  background:var(--white); border-radius:var(--radius-md); padding:18px 20px; box-shadow:var(--shadow-soft);
+  display:flex; align-items:center; gap:14px;
+}
+.stat-icon{
+  width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;
+  background:var(--purple-100);
+}
+.stat-card:nth-child(2) .stat-icon{background:var(--gold-100);}
+.stat-card:nth-child(3) .stat-icon{background:var(--gold-50);}
+.stat-num{font-family:var(--font-display); font-size:22px; color:var(--purple-900); line-height:1;}
+.stat-label{font-size:12px; color:var(--ink-soft); margin-top:3px;}
+
+.admin-toolbar{
+  display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; align-items:center; justify-content:space-between;
+}
+.admin-toolbar .filters{display:flex; gap:10px; flex-wrap:wrap; flex:1;}
+.admin-toolbar input, .admin-toolbar select{
+  padding:10px 13px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200); font-size:13.5px;
+}
+.admin-toolbar input{min-width:220px; flex:1;}
+.sellos-range{
+  display:flex; align-items:center; gap:6px; background:var(--white); border:1.5px solid var(--gray-200);
+  border-radius:var(--radius-sm); padding:0 10px;
+}
+.sellos-range-label{font-size:12.5px; color:var(--ink-soft); white-space:nowrap; font-weight:600;}
+.sellos-range input{
+  width:56px; min-width:0; flex:none; border:none; padding:10px 4px; text-align:center;
+}
+.sellos-range input:focus{outline:none;}
+.sellos-range span{color:var(--ink-soft);}
+
+.table-wrap{
+  background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+  overflow:auto; max-height:70vh;
+}
+table{border-collapse:collapse; width:100%; font-size:13px; min-width:1100px;}
+thead th{
+  position:sticky; top:0; background:var(--purple-900); color:var(--white); text-align:left;
+  padding:12px 14px; font-size:11.5px; text-transform:uppercase; letter-spacing:.5px; white-space:nowrap;
+}
+tbody td{padding:12px 14px; border-bottom:1px solid var(--gray-100); white-space:nowrap; color:var(--ink);}
+tbody tr:hover{background:var(--beige-50);}
+.code-pill{
+  background:var(--purple-100); color:var(--purple-700); padding:4px 10px; border-radius:999px; font-weight:700; font-size:12px;
+}
+.stamp-mini{font-size:12px; color:var(--ink-soft);}
+.row-actions{display:flex; gap:6px;}
+.icon-btn{
+  border:none; background:var(--gray-100); width:30px; height:30px; border-radius:8px; font-size:13px;
+  display:flex; align-items:center; justify-content:center; transition:background .15s;
+}
+.icon-btn:hover{background:var(--purple-100);}
+.icon-btn.danger:hover{background:#F6DEDB;}
+
+/* ---------- Modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(51,17,91,0.45); display:flex; align-items:center; justify-content:center;
+  z-index:100; padding:16px; backdrop-filter:blur(2px);
+}
+.modal-overlay.hidden{display:none;}
+.modal-box{
+  background:var(--white); border-radius:var(--radius-lg); padding:26px; max-width:640px; width:100%;
+  max-height:88vh; overflow:auto; box-shadow:0 30px 60px -20px rgba(51,17,91,0.5);
+}
+.modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+.modal-close{background:none; border:none; font-size:20px; color:var(--ink-soft);}
+
+/* ---------- Toast ---------- */
+#toast-container{position:fixed; bottom:22px; right:22px; z-index:200; display:flex; flex-direction:column; gap:10px;}
+.toast{
+  background:var(--purple-900); color:var(--white); padding:13px 18px; border-radius:var(--radius-md);
+  box-shadow:0 12px 26px -10px rgba(51,17,91,0.5); font-size:13.5px; font-weight:600;
+  display:flex; align-items:center; gap:10px; animation:toastIn .25s ease;
+  max-width:320px;
+}
+.toast.success{background:linear-gradient(120deg,var(--purple-700),var(--success));}
+.toast.error{background:linear-gradient(120deg,var(--purple-700),var(--danger));}
+@keyframes toastIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+footer{text-align:center; padding:30px; font-size:12px; color:var(--ink-soft);}
+
+/* =========================================================
+   CONTROL DE BENEFICIOS — morado + dorado + blanco
+   ========================================================= */
+.benefits-scope .hero{
+  background:linear-gradient(120deg,var(--purple-900) 0%, #341558 100%);
+}
+.benefits-scope .hero::before{ color:var(--gold-500); }
+.benefits-scope .hero-badge{
+  background:rgba(201,162,39,0.16); border:1px solid rgba(221,187,85,0.45); color:var(--gold-100);
+}
+.benefits-scope .btn-primary{
+  background:linear-gradient(120deg,var(--purple-700),var(--gold-500));
+  box-shadow:0 10px 22px -8px rgba(201,162,39,0.45);
+}
+.benefits-scope .btn-primary:hover{ box-shadow:0 14px 26px -8px rgba(201,162,39,0.6); }
+.benefits-scope .step-badge{ background:var(--gold-100); color:var(--gold-600); }
+.benefits-scope .code-pill{ background:var(--gold-100); color:var(--gold-600); }
+
+.status-chip{
+  display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:999px;
+  font-size:12.5px; font-weight:800; white-space:nowrap; letter-spacing:.3px; border:1.5px solid transparent;
+}
+.status-apto{background:#E4F5EC; color:#1F8A55; border-color:#9FDBBA;}
+.status-no_apto{background:#F6DEDB; color:#A03D33; border-color:#E3B2AB;}
+.status-pendiente{background:#FFF4D6; color:#8A6A0E; border-color:#EFCF7C;}
+.status-utilizado{background:#EDEDED; color:#6E6E6E; border-color:#D2D2D2;}
+
+.status-legend{
+  display:flex; flex-wrap:wrap; gap:10px 22px; align-items:center;
+  background:var(--white); border:1.5px solid var(--gray-200); border-radius:var(--radius-md);
+  padding:14px 18px; margin-bottom:22px;
+}
+.status-legend-item{
+  display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-soft); max-width:260px;
+}
+
+.requirements-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px; margin-bottom:28px;
+}
+.req-card{
+  background:var(--white); border-radius:var(--radius-md); box-shadow:var(--shadow-soft);
+  padding:16px; border-top:4px solid var(--gold-500);
+}
+.req-card-name{font-weight:700; color:var(--purple-900); margin-bottom:10px; font-size:13.5px;}
+.req-card-row{margin-bottom:8px; font-size:12.5px;}
+.req-card-row:last-child{margin-bottom:0;}
+.req-card-row span{display:block; color:var(--ink-soft); font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; margin-bottom:2px;}
+.req-card-row strong{color:var(--ink); font-weight:600;}
+
+.dashboard-wrap{
+  background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+  overflow:auto; margin-bottom:26px;
+}
+.dashboard-wrap table{min-width:640px;}
+.dashboard-wrap thead th{ background:var(--purple-900); }
+.dashboard-wrap td:first-child{font-weight:700; color:var(--purple-900);}
+.dash-num{
+  display:inline-flex; align-items:center; justify-content:center; min-width:28px;
+  font-family:var(--font-body); font-size:13.5px;
+}
+.dash-zero{color:var(--ink-soft); font-weight:600;}
+.dash-link{
+  background:var(--gold-100); color:var(--gold-600); border:1.5px solid var(--gold-400);
+  border-radius:999px; padding:4px 12px; font-weight:700; cursor:pointer; transition:all .15s;
+}
+.dash-link:hover{ background:var(--gold-500); color:var(--white); border-color:var(--gold-500); }
+
+.benefits-search-wrap{
+  background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+  padding:22px; margin-bottom:26px;
+}
+.benefits-search-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+.benefits-search-row input{
+  flex:1; min-width:240px; padding:11px 13px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200);
+  font-size:14px;
+}
+.advisor-row{
+  display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:12.5px; color:var(--ink-soft);
+}
+.advisor-row input{
+  padding:8px 10px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200); font-size:13px; width:220px;
+}
+.benefits-quick-list{display:flex; flex-direction:column; gap:8px;}
+.benefits-quick-item{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  background:var(--beige-50); border-radius:var(--radius-md); padding:10px 14px; cursor:pointer;
+  transition:background .15s;
+}
+.benefits-quick-item:hover{ background:var(--gold-50); }
+.benefits-quick-item .bqi-name{font-weight:600; font-size:13.5px;}
+.benefits-quick-item .bqi-pet{font-size:11.5px; color:var(--ink-soft); display:block;}
+
+.ficha-head{
+  display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;
+  background:linear-gradient(120deg,var(--purple-900),#3A1755); color:var(--white);
+  border-radius:var(--radius-md); padding:18px 20px; margin-bottom:18px;
+}
+.ficha-head h4{color:var(--white); font-size:18px;}
+.ficha-head p{color:#EAD9B8; font-size:12.5px; margin-top:4px;}
+.ficha-head .gold{color:var(--gold-400); font-weight:700;}
+
+.benefit-row{
+  border:1.5px solid var(--gray-100); border-left:5px solid var(--gray-200); border-radius:var(--radius-md);
+  padding:14px 16px 14px 18px; margin-bottom:12px; background:var(--white);
+}
+.benefit-row.b-apto{ border-left-color:#1F8A55; background:#F4FBF7; }
+.benefit-row.b-no_apto{ border-left-color:#A03D33; background:#FDF6F5; }
+.benefit-row.b-pendiente{ border-left-color:#8A6A0E; background:#FFFBF0; }
+.benefit-row.b-utilizado{ border-left-color:#8C8C8C; background:#F7F7F7; }
+.benefit-row-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
+.benefit-row-head strong{font-size:14px;}
+.benefit-detail{font-size:12.5px; color:var(--ink-soft); margin-bottom:8px;}
+.benefit-row .btn{margin-top:4px;}
+
+.promo-form-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;}
+@media (max-width:600px){ .promo-form-grid{grid-template-columns:1fr;} }
+.promo-list{display:flex; flex-direction:column; gap:10px; margin-top:16px;}
+.promo-card{
+  background:var(--white); border-radius:var(--radius-md); box-shadow:var(--shadow-soft);
+  padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.promo-card .promo-name{font-weight:700; color:var(--purple-900);}
+.promo-card .promo-dates{font-size:12px; color:var(--ink-soft);}
+.promo-card .promo-req{font-size:11.5px; color:var(--gold-600); margin-top:2px;}
+
+.modal-box.modal-wide{max-width:760px;}
+
+/* =========================================================
+   PÁGINA DE INICIO (pública)
+   ========================================================= */
+.home-quicknav{
+  display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:30px;
+}
+.home-quicknav a{
+  padding:8px 16px; border-radius:999px; background:var(--white); color:var(--purple-700);
+  font-size:12.5px; font-weight:700; text-decoration:none; box-shadow:var(--shadow-soft);
+  border:1.5px solid var(--gold-400); transition:all .15s;
+}
+.home-quicknav a:hover{ background:var(--purple-700); color:var(--white); }
+
+.home-section{ margin-bottom:36px; scroll-margin-top:90px; }
+.section-kicker{
+  display:inline-block; font-size:11.5px; font-weight:700; color:var(--gold-600);
+  text-transform:uppercase; letter-spacing:.6px; margin-bottom:8px;
+}
+.section-title{ font-size:22px; color:var(--purple-900); margin-bottom:18px; }
+.home-section.card h3{ font-size:22px; margin-bottom:12px; }
+.home-lead{ font-size:15px; line-height:1.6; color:var(--ink); max-width:760px; }
+
+.steps-grid{
+  display:grid; grid-template-columns:repeat(5,1fr); gap:16px;
+}
+@media (max-width:980px){ .steps-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .steps-grid{grid-template-columns:1fr;} }
+.step-card{
+  background:var(--white); border-radius:var(--radius-md); padding:20px 16px; box-shadow:var(--shadow-soft);
+  border-top:4px solid var(--gold-500); text-align:center;
+}
+.step-num{
+  font-family:var(--font-display); font-size:26px; color:var(--gold-500); font-weight:700; margin-bottom:8px;
+}
+.step-card h4{ font-size:14.5px; color:var(--purple-900); margin-bottom:6px; }
+.step-card p{ font-size:12.5px; color:var(--ink-soft); }
+
+.benefit-cards-public{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+}
+@media (max-width:980px){ .benefit-cards-public{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .benefit-cards-public{grid-template-columns:1fr;} }
+.benefit-public-card{
+  background:var(--white); border-radius:var(--radius-md); padding:18px; box-shadow:var(--shadow-soft);
+  border-left:4px solid var(--gold-500); position:relative;
+}
+.bpc-num{
+  position:absolute; top:14px; right:16px; font-family:var(--font-display); font-size:13px;
+  color:var(--gold-500); font-weight:700; opacity:.7;
+}
+.benefit-public-card h4{ font-size:14px; color:var(--purple-900); margin-bottom:8px; padding-right:30px; }
+.benefit-public-card p{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
+.benefit-public-card strong{ color:var(--purple-700); }
+
+.terms-list{ margin:0; padding-left:20px; }
+.terms-list li{ font-size:13.5px; color:var(--ink); margin-bottom:8px; line-height:1.5; }
+
+.contact-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:6px;
+}
+@media (max-width:780px){ .contact-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:480px){ .contact-grid{grid-template-columns:1fr;} }
+.contact-item{
+  display:flex; gap:12px; align-items:flex-start; background:var(--beige); border-radius:var(--radius-md); padding:14px;
+  text-decoration:none; color:inherit; transition:background .15s, transform .15s; cursor:pointer;
+}
+a.contact-item:hover{ background:var(--gold-100); transform:translateY(-2px); }
+.contact-icon{ font-size:22px; flex-shrink:0; }
+.contact-item strong{ display:block; font-size:13px; color:var(--purple-900); margin-bottom:2px; }
+.contact-item p{ font-size:12px; color:var(--ink-soft); }
+.whatsapp-sublinks{ display:flex; flex-direction:column; gap:4px; margin-top:8px; }
+.whatsapp-sublinks a{
+  font-size:11.5px; font-weight:600; color:var(--purple-700); text-decoration:none;
+  background:var(--white); padding:6px 10px; border-radius:999px; transition:background .15s, color .15s;
+}
+.whatsapp-sublinks a:hover{ background:var(--purple-700); color:var(--white); }
+
+/* ---------- Mensajería ---------- */
+.msg-filter-card textarea{
+  width:100%; padding:11px 13px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200);
+  background:var(--white); font-size:14px; color:var(--ink); resize:vertical; font-family:inherit;
+}
+.msg-select-actions{ display:flex; gap:16px; margin-bottom:10px; }
+.btn-link{
+  background:none; border:none; padding:0; font-size:12.5px; font-weight:700; color:var(--purple-700);
+  text-decoration:underline; cursor:pointer;
+}
+.btn-link:hover{ color:var(--gold-500); }
+.msg-clients-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
+.msg-client-row{
+  display:flex; align-items:center; gap:12px; background:var(--beige); border-radius:var(--radius-md); padding:12px 14px;
+}
+.msg-client-row input[type="checkbox"]{ width:18px; height:18px; accent-color:var(--purple-700); flex-shrink:0; }
+.msg-client-row .mcr-name{ font-weight:700; color:var(--purple-900); font-size:13.5px; }
+.msg-client-row .mcr-meta{ font-size:11.5px; color:var(--ink-soft); }
+.msg-copy-actions{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+.msg-warning{ font-size:11.5px; color:var(--ink-soft); margin-top:12px; line-height:1.5; }
+.msg-send-links{ display:flex; flex-direction:column; gap:8px; }
+.msg-send-row{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--beige);
+  border-radius:var(--radius-md); padding:12px 14px; flex-wrap:wrap;
+}
+.msg-send-row .mcr-name{ font-weight:700; color:var(--purple-900); font-size:13.5px; }
+.msg-send-row-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+.msg-send-row-actions a{
+  font-size:12px; font-weight:700; text-decoration:none; padding:8px 14px; border-radius:999px;
+  color:var(--white); white-space:nowrap;
+}
+.msg-send-row-actions a.msg-wa{ background:#25D366; }
+.msg-send-row-actions a.msg-mail{ background:var(--purple-700); }
+.msg-send-row-actions span.disabled-link{
+  font-size:12px; font-weight:700; padding:8px 14px; border-radius:999px; background:var(--gray-200); color:var(--ink-soft);
+}
+
+/* Consulta tus beneficios (público) */
+.public-benefit-grid{ display:flex; flex-direction:column; gap:10px; }
+.public-benefit-item{
+  display:flex; justify-content:space-between; align-items:center; background:var(--beige);
+  border-radius:var(--radius-sm); padding:10px 14px; font-size:13px; font-weight:600; color:var(--ink);
+}
+
+/* =========================================================
+   MODAL DE COMPRA AMPLIADA
+   ========================================================= */
+.purchase-calc-box{
+  background:var(--beige); border-radius:var(--radius-md); padding:14px 16px; margin-top:14px;
+  display:flex; flex-direction:column; gap:6px;
+}
+.purchase-calc-box > div{ display:flex; justify-content:space-between; font-size:13px; color:var(--ink-soft); }
+.purchase-calc-box strong{ color:var(--ink); }
+.purchase-calc-total{ border-top:1px solid var(--gold-400); margin-top:4px; padding-top:8px; }
+.purchase-calc-total span{ font-weight:700; color:var(--purple-900); }
+.purchase-calc-total strong{ color:var(--purple-900); font-size:16px; }
+
+.purchase-stats-row{
+  display:flex; flex-wrap:wrap; gap:14px; font-size:12.5px; color:var(--ink-soft);
+  background:var(--beige); border-radius:var(--radius-md); padding:10px 14px; margin-bottom:14px;
+}
+.purchase-stats-row strong{ color:var(--purple-900); }
+
+/* =========================================================
+   DASHBOARD: indicadores y gráficos
+   ========================================================= */
+.kpi-indicator-grid{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:10px;
+}
+@media (max-width:780px){ .kpi-indicator-grid{grid-template-columns:1fr;} }
+.kpi-indicator{
+  background:var(--white); border-radius:var(--radius-md); box-shadow:var(--shadow-soft); padding:14px 16px;
+}
+.kpi-indicator-head{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--ink-soft); margin-bottom:8px; }
+.kpi-indicator-head strong{ color:var(--purple-900); font-size:14px; }
+
+.charts-grid{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:22px;
+}
+@media (max-width:780px){ .charts-grid{grid-template-columns:1fr;} }
+.chart-card{
+  background:var(--white); border-radius:var(--radius-md); box-shadow:var(--shadow-soft); padding:16px;
+}
+.chart-card h4{ font-size:13px; color:var(--purple-900); margin-bottom:12px; }
+.bar-chart{ display:flex; flex-direction:column; gap:8px; }
+.bar-chart-row{ display:grid; grid-template-columns:120px 1fr 26px; align-items:center; gap:8px; }
+.bar-chart-label{ font-size:11px; color:var(--ink-soft); }
+.bar-chart-track{ height:10px; border-radius:999px; background:var(--beige); overflow:hidden; }
+.bar-chart-fill{ height:100%; border-radius:999px; background:linear-gradient(90deg,var(--purple-700),var(--gold-500)); transition:width .3s; }
+.bar-chart-value{ font-size:11.5px; font-weight:700; color:var(--purple-900); text-align:right; }
+
+.academic-note{
+  background:var(--beige); border-left:4px solid var(--gold-500); border-radius:var(--radius-sm);
+  padding:12px 16px; font-size:12px; color:var(--ink-soft); margin-top:10px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="paw-bg" aria-hidden="true">
+  <span style="top:10%; left:4%;">🐾</span>
+  <span style="top:70%; left:88%;">🐾</span>
+  <span style="top:40%; left:92%;">🐾</span>
+  <span style="top:85%; left:15%;">🐾</span>
+</div>
+
+<!-- ===================== TOPBAR ===================== -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L3 6v6c0 5 3.8 8.7 9 10 5.2-1.3 9-5 9-10V6l-9-4z" fill="#FFFFFF" opacity="0.95"/>
+        <circle cx="9" cy="10" r="1.3" fill="#4B1F6F"/>
+        <circle cx="15" cy="10" r="1.3" fill="#4B1F6F"/>
+        <circle cx="7" cy="13.5" r="1.1" fill="#4B1F6F"/>
+        <circle cx="17" cy="13.5" r="1.1" fill="#4B1F6F"/>
+        <path d="M12 12.5c-2 0-3.4 1.5-3.4 3 0 1.1 1 1.8 2 1.4.5-.2.9-.5 1.4-.5s.9.3 1.4.5c1 .4 2-.3 2-1.4 0-1.5-1.4-3-3.4-3z" fill="#4B1F6F"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <h1>PET SHIELD</h1>
+      <span>Club de fidelización</span>
+    </div>
+  </div>
+  <nav class="nav-tabs">
+    <button data-target="view-home" class="active">🏠 Inicio</button>
+    <button data-target="view-register">✨ Únete al club</button>
+    <button data-target="view-lookup">🐶 Consulta tus sellos</button>
+    <button data-target="view-public-benefits">🔎 Consulta tus beneficios</button>
+    <button data-target="view-addstamp">🔒 Agregar sello</button>
+    <button data-target="view-admin">🔒 Ver registros</button>
+    <button data-target="view-benefits">🔒 Control de beneficios</button>
+    <button data-target="view-dashboard">🔒 Dashboard</button>
+    <button data-target="view-config">🔒 Configuración</button>
+    <button data-target="view-messaging">🔒 Mensajería</button>
+    <button data-target="view-crm">🔒 CRM</button>
+  </nav>
+</header>
+
+<main>
+
+  <section id="view-home" class="view active">
+
+    <div class="hero">
+      <div class="hero-text">
+        <span class="hero-badge">🐾 Fidelización pensada para ti y tu mascota</span>
+        <h2>Club Pet Shield</h2>
+        <p>Regístrate, acumula sellos en cada compra y desbloquea beneficios exclusivos para ti y tu perro.</p>
+      </div>
+    </div>
+
+    <div class="home-quicknav">
+      <a href="#home-que-es">¿Qué es?</a>
+      <a href="#home-como-funciona">¿Cómo funciona?</a>
+      <a href="#home-beneficios">Beneficios</a>
+      <a href="#home-promos">Promociones</a>
+      <a href="#home-terminos">Términos</a>
+      <a href="#home-contacto">Contacto</a>
+    </div>
+
+    <!-- ¿Qué es Club Pet Shield? -->
+    <div id="home-que-es" class="card home-section">
+      <span class="section-kicker">🐾 Sobre el programa</span>
+      <h3>¿Qué es Club Pet Shield?</h3>
+      <p class="home-lead">Club Pet Shield es el programa de fidelización de Pet Shield creado para fortalecer la relación con nuestros clientes, incentivar la recompra, premiar la frecuencia de compra y ofrecer beneficios exclusivos para los clientes y sus mascotas.</p>
+    </div>
+
+    <!-- ¿Cómo funciona? -->
+    <div id="home-como-funciona" class="home-section">
+      <span class="section-kicker">🐾 Paso a paso</span>
+      <h3 class="section-title">¿Cómo funciona?</h3>
+      <div class="steps-grid">
+        <div class="step-card"><div class="step-num">01</div><h4>Regístrate</h4><p>Crea tu cuenta en Club Pet Shield.</p></div>
+        <div class="step-card"><div class="step-num">02</div><h4>Realiza tus compras</h4><p>Cada compra queda registrada en tu historial.</p></div>
+        <div class="step-card"><div class="step-num">03</div><h4>Acumula beneficios</h4><p>Tu actividad de compra determina los beneficios disponibles.</p></div>
+        <div class="step-card"><div class="step-num">04</div><h4>Consulta tu progreso</h4><p>Revisa tus sellos, compras y beneficios.</p></div>
+        <div class="step-card"><div class="step-num">05</div><h4>Disfruta tus recompensas</h4><p>Utiliza descuentos, promociones y beneficios exclusivos.</p></div>
+      </div>
+    </div>
+
+    <!-- Beneficios del Club Pet Shield -->
+    <div id="home-beneficios" class="home-section">
+      <span class="section-kicker">🏅 Exclusivos para ti y tu mascota</span>
+      <h3 class="section-title">Beneficios del Club Pet Shield</h3>
+      <div class="benefit-cards-public">
+        <div class="benefit-public-card"><div class="bpc-num">01</div><h4>🎟️ Tarjeta de fidelización</h4><p>Cada compra = 1 sello. Al completar <strong id="home-max-stamps">10</strong> sellos: <strong>10% de descuento</strong> en tu próxima compra.</p></div>
+        <div class="benefit-public-card"><div class="bpc-num">02</div><h4>📦 Descuento por volumen</h4><p>Hasta <span id="home-vol-units-minus1">5</span> unidades: precio normal. Desde <strong id="home-vol-units-2">6</strong> unidades: aplica descuento especial.</p></div>
+        <div class="benefit-public-card"><div class="bpc-num">03</div><h4>🥈 Segunda compra</h4><p>Después de tu primera compra: <strong><span id="home-second-pct">5</span>% de descuento</strong> en la segunda.</p></div>
+        <div class="benefit-public-card"><div class="bpc-num">04</div><h4>🤝 Programa de referidos</h4><p>Quien refiere recibe <strong><span id="home-ref-stamps">1</span> sello</strong> adicional. El referido recibe <strong><span id="home-ref-pct">5</span>% de descuento</strong> en su primera compra.</p></div>
+        <div class="benefit-public-card"><div class="bpc-num">05</div><h4>🎂 Cumpleaños de tu mascota</h4><p>Durante los <span id="home-bday-before">7</span> días antes y <span id="home-bday-after">7</span> después del cumpleaños: <strong><span id="home-bday-pct">10</span>% de descuento</strong>.</p></div>
+        <div class="benefit-public-card"><div class="bpc-num">06</div><h4>🐾 Huella Dorada</h4><p>Cliente frecuente desde <strong id="home-huella-compras">5</strong> compras, o <strong id="home-huella-gasto">$500.000</strong> acumulados.</p></div>
+        <div class="benefit-public-card"><div class="bpc-num">07</div><h4>🎟️ Sorteos mensuales</h4><p>Participa con <strong id="home-raffle-compras">3</strong>+ compras, o <strong id="home-raffle-sellos">5</strong>+ sellos acumulados.</p></div>
+        <div class="benefit-public-card"><div class="bpc-num">08</div><h4>🎉 Promociones de temporada</h4><p>Halloween, Navidad, Mes de las mascotas, Black Friday, Aniversario Pet Shield y más.</p></div>
+      </div>
+    </div>
+
+    <!-- Promociones activas -->
+    <div id="home-promos" class="home-section">
+      <span class="section-kicker">🎉 Vigentes ahora</span>
+      <h3 class="section-title">Promociones activas</h3>
+      <div id="home-promos-list" class="promo-list"></div>
+    </div>
+
+    <!-- Términos y condiciones -->
+    <div id="home-terminos" class="card home-section">
+      <span class="section-kicker">📋 Buenas prácticas</span>
+      <h3>Términos y condiciones del Club Pet Shield</h3>
+      <ul class="terms-list">
+        <li>Los beneficios son personales e intransferibles.</li>
+        <li>Los descuentos están sujetos a las condiciones de cada beneficio.</li>
+        <li>Los beneficios pueden tener una vigencia determinada.</li>
+        <li>Los beneficios no son acumulables entre sí, salvo que se indique expresamente.</li>
+        <li>Los sellos se generan únicamente por compras válidas.</li>
+        <li>Las promociones de temporada tienen condiciones particulares.</li>
+        <li>El uso de cada beneficio queda registrado en el sistema.</li>
+        <li>El cliente debe proporcionar información correcta al registrarse.</li>
+      </ul>
+    </div>
+
+    <!-- Contacto -->
+    <div id="home-contacto" class="card home-section">
+      <span class="section-kicker">💬 Estamos para ayudarte</span>
+      <h3>¿Necesitas ayuda?</h3>
+      <div class="contact-grid">
+        <div class="contact-item contact-item-whatsapp">
+          <span class="contact-icon">💬</span>
+          <div>
+            <strong>WhatsApp</strong>
+            <p>Escríbenos y te respondemos rápido.</p>
+            <div class="whatsapp-sublinks">
+              <a href="https://wa.me/573118808281" target="_blank" rel="noopener">Línea 1 · +57 311 880 8281</a>
+              <a href="https://wa.me/573158461621" target="_blank" rel="noopener">Línea 2 · +57 315 846 1621</a>
+            </div>
+          </div>
+        </div>
+        <a class="contact-item" href="https://www.instagram.com/pet.shield2026?igsh=MXZremEybXdnN2FsaA==" target="_blank" rel="noopener"><span class="contact-icon">📷</span><div><strong>Instagram</strong><p>@petshield</p></div></a>
+        <a class="contact-item" href="mailto:petshield16@gmail.com"><span class="contact-icon">✉️</span><div><strong>Correo</strong><p>petshield16@gmail.com</p></div></a>
+        <div class="contact-item"><span class="contact-icon">📍</span><div><strong>Dirección</strong><p>Tu tienda Pet Shield más cercana</p></div></div>
+        <div class="contact-item"><span class="contact-icon">🕐</span><div><strong>Horario de atención</strong><p>Lunes a sábado</p></div></div>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="view-register" class="view">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="hero-badge">🐾 Beneficios exclusivos para ti y tu mascota</span>
+        <h2>¡Únete al Club Pet Shield!</h2>
+        <p>Regístrate y comienza a acumular sellos en cada visita. Protección, comodidad y estilo en cada paseo.</p>
+      </div>
+    </div>
+
+    <div class="register-grid">
+      <div class="form-panel card">
+        <form id="register-form" novalidate>
+
+          <div class="form-section">
+            <div class="form-section-head">
+              <div class="step-badge">1</div>
+              <h3>Datos del cliente</h3>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label for="f-nombre">Nombre completo</label>
+                <input id="f-nombre" name="nombre" data-required="true" placeholder="Escribe tu nombre completo">
+                <span class="field-error-msg"></span>
+              </div>
+              <div class="field">
+                <label for="f-celular">Número de celular</label>
+                <input id="f-celular" name="celular" data-required="true" placeholder="Ej: 300 123 4567">
+                <span class="field-error-msg"></span>
+              </div>
+              <div class="field">
+                <label for="f-correo">Correo electrónico</label>
+                <input id="f-correo" name="correo" type="email" data-required="true" placeholder="Ej: correo@mail.com">
+                <span class="field-error-msg"></span>
+              </div>
+              <div class="field">
+                <label for="f-fnac">Fecha de nacimiento</label>
+                <input id="f-fnac" name="fechaNacimiento" type="date" data-required="true">
+                <span class="field-error-msg"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-head">
+              <div class="step-badge">2</div>
+              <h3>Datos de tu mascota</h3>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label for="f-mnombre">Nombre de tu mascota</label>
+                <input id="f-mnombre" name="mascotaNombre" data-required="true" placeholder="Escribe el nombre de tu mascota">
+                <span class="field-error-msg"></span>
+              </div>
+              <div class="field">
+                <label for="f-mtipo">Tipo de mascota</label>
+                <select id="f-mtipo" name="mascotaTipo" data-required="true">
+                  <option value="Perro" selected>Perro</option>
+                </select>
+                <span class="field-error-msg"></span>
+              </div>
+              <div class="field">
+                <label for="f-raza">Raza</label>
+                <input id="f-raza" name="raza" placeholder="Escribe la raza de tu mascota">
+              </div>
+              <div class="field">
+                <label for="f-mcumple">Fecha de cumpleaños</label>
+                <input id="f-mcumple" name="fechaCumple" type="date">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-head">
+              <div class="step-badge">3</div>
+              <h3>Información para el programa</h3>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label for="f-como">¿Cómo conociste Pet Shield?</label>
+                <select id="f-como" name="comoConocio" data-required="true">
+                  <option value="">Selecciona una opción</option>
+                  <option>Redes sociales</option>
+                  <option>Recomendación de un amigo</option>
+                  <option>Publicidad</option>
+                  <option>Visité la tienda</option>
+                  <option>Otro</option>
+                </select>
+                <span class="field-error-msg"></span>
+              </div>
+              <div class="field">
+                <label for="f-referido">Código de referido (opcional)</label>
+                <input id="f-referido" name="referido" placeholder="Si alguien te refirió, escríbelo aquí">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-head">
+              <div class="step-badge">4</div>
+              <h3>Autorización y aceptación</h3>
+            </div>
+            <label class="consent-box">
+              <input type="checkbox" name="consentimiento" data-required="true">
+              <span>Acepto el tratamiento de mis datos personales y autorizo a Pet Shield a enviarme información sobre promociones, descuentos, sorteos y beneficios exclusivos.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary">🐾 REGISTRARME AL CLUB 🐾</button>
+        </form>
+      </div>
+
+      <div class="welcome-panel">
+        <div id="welcome-empty" class="card" style="text-align:center;">
+          <div class="welcome-icon">🐕</div>
+          <h3>Bienvenido al Club Pet Shield</h3>
+          <p>Completa el formulario y aquí verás tu código de cliente y tu tarjeta de fidelización.</p>
+        </div>
+        <div id="welcome-panel" class="card hidden">
+          <div class="welcome-icon">🎉</div>
+          <h3>¡Bienvenido al Club Pet Shield!</h3>
+          <p>Tu inscripción fue exitosa. Ahora puedes comenzar a acumular sellos y disfrutar de beneficios exclusivos para ti y tu mascota.</p>
+          <div class="client-code-box">
+            <span>Tu código de cliente</span>
+            <strong id="welcome-code">—</strong>
+          </div>
+          <p style="margin-bottom:4px;"><strong id="welcome-owner"></strong> · <span id="welcome-pet"></span></p>
+          <div class="stamp-row" id="welcome-stamps"></div>
+          <div class="progress-track"><div class="progress-fill" id="welcome-progress-fill" style="width:0%"></div></div>
+          <p class="progress-caption" id="welcome-progress-caption"></p>
+          <div class="complete-banner" id="welcome-complete">¡Felicitaciones! Has completado tu tarjeta de fidelización.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="view-lookup" class="view">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="hero-badge">🐾 Tu progreso, siempre a la mano</span>
+        <h2>Consulta tus sellos</h2>
+        <p>Ingresa tu código de cliente Pet Shield para ver tu tarjeta de fidelización y cuántos sellos te faltan.</p>
+      </div>
+    </div>
+
+    <form id="lookup-form" class="lookup-search">
+      <input id="lookup-input" placeholder="Ej: PET-000001" autocomplete="off">
+      <button type="submit" class="btn btn-primary" style="width:auto;">Buscar</button>
+    </form>
+
+    <div class="lookup-result">
+      <div id="lookup-result" class="card hidden">
+        <h3 style="text-align:center; margin-bottom:4px;">TARJETA DE FIDELIZACIÓN</h3>
+        <p style="text-align:center; color:var(--ink-soft); font-size:13px; margin-bottom:14px;">Club Pet Shield</p>
+        <div class="result-pet-row">
+          <div><span>Cliente</span><strong id="lookup-owner"></strong></div>
+          <div><span>Mascota</span><strong id="lookup-pet"></strong></div>
+        </div>
+        <div class="result-pet-row">
+          <div><span>Código</span><strong id="lookup-code"></strong></div>
+          <div><span>Sellos</span><strong id="lookup-count"></strong></div>
+        </div>
+        <div class="stamp-row" id="lookup-stamps"></div>
+        <div class="progress-track"><div class="progress-fill" id="lookup-progress-fill" style="width:0%"></div></div>
+        <p class="progress-caption" id="lookup-progress-caption"></p>
+        <div class="complete-banner" id="lookup-complete">¡Felicitaciones! Has completado tu tarjeta de fidelización.</div>
+      </div>
+
+      <div id="lookup-empty" class="card hidden">
+        <div class="empty-state">
+          <span class="emoji">🔍</span>
+          <p class="empty-msg">No encontramos ese código. Verifica e inténtalo nuevamente.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="view-public-benefits" class="view">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="hero-badge">🔎 Todo tu progreso en un solo lugar</span>
+        <h2>Consulta tus beneficios</h2>
+        <p>Busca tu código de cliente, tu nombre o tu celular para ver tus sellos, tus compras y qué beneficios tienes disponibles ahora mismo.</p>
+      </div>
+    </div>
+
+    <form id="public-benefits-form" class="lookup-search">
+      <input id="public-benefits-input" placeholder="Código, nombre o celular" autocomplete="off">
+      <button type="submit" class="btn btn-primary" style="width:auto;">Buscar</button>
+    </form>
+
+    <div class="lookup-result">
+      <div id="public-benefits-result" class="card hidden"></div>
+      <div id="public-benefits-empty" class="card hidden">
+        <div class="empty-state">
+          <span class="emoji">🔍</span>
+          <p>No encontramos ese cliente. Verifica el dato e inténtalo nuevamente.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-addstamp" class="view">
+
+    <div id="addstamp-gate" class="gate-wrap">
+      <div class="lock-icon">🔒</div>
+      <h2 style="margin-bottom:8px;">Agregar sello</h2>
+      <p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:20px;">Esta sección es de uso interno de Pet Shield. Ingresa la contraseña para continuar.</p>
+      <form id="addstamp-gate-form">
+        <div class="field" style="margin-bottom:14px;">
+          <input id="addstamp-gate-password" type="password" placeholder="Contraseña" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary">Desbloquear</button>
+        <p class="gate-error" id="addstamp-gate-error">Código incorrecto. Inténtalo nuevamente.</p>
+      </form>
+    </div>
+
+    <div id="addstamp-content" class="hidden">
+      <div class="hero">
+        <div class="hero-text">
+          <span class="hero-badge">🐾 Para uso del equipo Pet Shield</span>
+          <h2>Agregar sello por nueva compra</h2>
+          <p>Busca al cliente por su nombre o su código Pet Shield y agrégale un sello cada vez que vuelva a comprar.</p>
+        </div>
+      </div>
+
+      <div class="admin-toolbar">
+        <div class="filters">
+          <input id="quicksearch-input" placeholder="Escribe el nombre del cliente o su código (Ej: María o PET-000001)" autocomplete="off">
+        </div>
+        <button class="btn btn-ghost btn-sm" id="addstamp-lock-btn">🔒 Bloquear sección</button>
+      </div>
+
+      <div id="quicksearch-results" class="quick-results"></div>
+      <div id="quicksearch-empty" class="empty-state">
+        <span class="emoji">🐾</span>
+        <p>Escribe el nombre o el código del cliente para encontrar su tarjeta.</p>
+      </div>
+    </div>
+  </section>
+  <section id="view-admin" class="view">
+
+    <div id="admin-gate" class="gate-wrap">
+      <div class="lock-icon">🔒</div>
+      <h2 style="margin-bottom:8px;">Ver registros</h2>
+      <p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:20px;">Esta sección es privada. Ingresa la contraseña de administrador para continuar.</p>
+      <form id="gate-form">
+        <div class="field" style="margin-bottom:14px;">
+          <input id="gate-password" type="password" placeholder="Contraseña" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary">Desbloquear panel</button>
+        <p class="gate-error" id="gate-error">Código incorrecto. Inténtalo nuevamente.</p>
+      </form>
+    </div>
+
+    <div id="admin-panel" class="hidden">
+      <div class="admin-toolbar">
+        <h2>Panel administrativo</h2>
+        <button class="btn btn-ghost btn-sm" id="admin-lock-btn">🔒 Bloquear panel</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div><div class="stat-num" id="stat-total">0</div><div class="stat-label">Clientes registrados</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div><div class="stat-num" id="stat-complete">0</div><div class="stat-label">Tarjetas completas (10/10)</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🐾</div>
+          <div><div class="stat-num" id="stat-avg">0.0</div><div class="stat-label">Promedio de sellos por cliente</div></div>
+        </div>
+      </div>
+
+      <div class="admin-toolbar">
+        <div class="filters">
+          <input id="admin-search" placeholder="🔎 Buscar por nombre, código, correo o mascota...">
+          <select id="admin-filter-tipo">
+            <option value="">Todos los tipos de mascota</option>
+            <option value="Perro">Perro</option>
+            <option value="Gato">Gato</option>
+            <option value="Otro">Otro</option>
+          </select>
+          <div class="sellos-range">
+            <span class="sellos-range-label">🐾 Sellos</span>
+            <input id="admin-filter-sellos-min" type="number" min="0" max="10" placeholder="Desde">
+            <span>–</span>
+            <input id="admin-filter-sellos-max" type="number" min="0" max="10" placeholder="Hasta">
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th><th>Nombre completo</th><th>Celular</th><th>Correo</th>
+              <th>F. nacimiento</th><th>Mascota</th><th>Tipo</th><th>Raza</th>
+              <th>Cumpleaños mascota</th><th>Cómo conoció</th><th>Referido</th>
+              <th>F. registro</th><th>Sellos</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="admin-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <section id="view-benefits" class="view benefits-scope">
+
+    <div id="benefits-gate" class="gate-wrap">
+      <div class="lock-icon">🔒</div>
+      <h2 style="margin-bottom:8px;">Control de beneficios</h2>
+      <p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:20px;">Sección exclusiva para el administrador. Ingresa la contraseña para continuar.</p>
+      <form id="benefits-gate-form">
+        <div class="field" style="margin-bottom:14px;">
+          <input id="benefits-gate-password" type="password" placeholder="Contraseña" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary">Desbloquear</button>
+        <p class="gate-error" id="benefits-gate-error">Código incorrecto. Inténtalo nuevamente.</p>
+      </form>
+    </div>
+
+    <div id="benefits-content" class="hidden">
+      <div class="hero">
+        <div class="hero-text">
+          <span class="hero-badge">🏅 Motor de beneficios Pet Shield</span>
+          <h2>Control de beneficios</h2>
+          <p>Descubre automáticamente qué clientes son aptos para cada beneficio del programa, según sus compras y su historial real.</p>
+        </div>
+      </div>
+
+      <div class="status-legend">
+        <span class="status-legend-item"><span class="status-chip status-apto">🟢 APTO</span> Cumple los requisitos ahora mismo — puede reclamarlo.</span>
+        <span class="status-legend-item"><span class="status-chip status-pendiente">🟡 PENDIENTE</span> Ya se cumplió la condición, falta confirmarlo o marcarlo.</span>
+        <span class="status-legend-item"><span class="status-chip status-no_apto">🔴 NO APTO</span> Todavía no cumple los requisitos.</span>
+        <span class="status-legend-item"><span class="status-chip status-utilizado">⚪ UTILIZADO</span> Ya se le entregó — no puede volver a reclamarlo.</span>
+      </div>
+
+      <h3 style="color:var(--purple-900); margin-bottom:4px;">📋 Requisitos de cada beneficio</h3>
+      <p style="font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;">Así se calcula cada estado — para saber exactamente por qué un cliente aparece APTO o NO APTO.</p>
+      <div id="benefit-requirements" class="requirements-grid"></div>
+
+      <div class="admin-toolbar">
+        <div>
+          <h3 style="color:var(--purple-900);">📊 Clientes aptos para beneficios</h3>
+          <p style="font-size:12px; color:var(--ink-soft); margin-top:2px;">Cada columna cuenta clientes según su estado actual — el color de cada número coincide con la leyenda de arriba.</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="benefits-lock-btn">🔒 Bloquear sección</button>
+      </div>
+
+      <div class="dashboard-wrap">
+        <table>
+          <thead>
+            <tr><th>Beneficio</th><th>🟢 Clientes aptos</th><th>⚪ Utilizados</th><th>🟡 Pendientes</th></tr>
+          </thead>
+          <tbody id="benefits-dashboard-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- ---------- Buscador de clientes ---------- -->
+      <div class="benefits-search-wrap">
+        <h3 style="color:var(--purple-900); margin-bottom:14px;">🔎 Buscador de clientes</h3>
+        <div class="advisor-row">
+          <label for="benefits-advisor">Registrado por (asesor):</label>
+          <input id="benefits-advisor" placeholder="Tu nombre">
+        </div>
+        <div class="benefits-search-row">
+          <input id="benefits-search-input" placeholder="Busca por código, nombre, celular o correo...">
+        </div>
+        <div id="benefits-search-results" class="benefits-quick-list"></div>
+        <div id="benefits-search-empty" class="empty-state">
+          <span class="emoji">🐾</span>
+          <p>Escribe un código, nombre, celular o correo para buscar un cliente y ver su ficha de beneficios.</p>
+        </div>
+      </div>
+
+      <!-- ---------- Promociones de temporada ---------- -->
+      <div class="benefits-search-wrap">
+        <h3 style="color:var(--purple-900); margin-bottom:6px;">🎉 Promociones de temporada</h3>
+        <p style="font-size:12.5px; color:var(--ink-soft); margin-bottom:16px;">Crea promociones especiales (Halloween, Navidad, Mes de las mascotas, Black Friday, Aniversario Pet Shield, etc.) y define qué requisitos debe cumplir un cliente para participar.</p>
+
+        <form id="promo-form" class="promo-form-grid">
+          <div class="field">
+            <label>Nombre de la promoción</label>
+            <select id="promo-nombre-select">
+              <option value="Halloween">Halloween</option>
+              <option value="Navidad">Navidad</option>
+              <option value="Mes de las mascotas">Mes de las mascotas</option>
+              <option value="Black Friday">Black Friday</option>
+              <option value="Aniversario Pet Shield">Aniversario Pet Shield</option>
+              <option value="__custom">Otra (personalizada)</option>
+            </select>
+          </div>
+          <div class="field" id="promo-custom-wrap" style="display:none;">
+            <label>Nombre personalizado</label>
+            <input id="promo-nombre-custom" placeholder="Nombre de la promoción">
+          </div>
+          <div class="field">
+            <label>Fecha de inicio</label>
+            <input type="date" id="promo-fecha-inicio" required>
+          </div>
+          <div class="field">
+            <label>Fecha de fin</label>
+            <input type="date" id="promo-fecha-fin" required>
+          </div>
+          <div class="field">
+            <label>Sellos mínimos requeridos</label>
+            <input type="number" min="0" max="10" id="promo-min-sellos" value="0">
+          </div>
+          <div class="field">
+            <label>Compras mínimas requeridas</label>
+            <input type="number" min="0" id="promo-min-compras" value="0">
+          </div>
+          <div class="field" style="grid-column:1 / -1;">
+            <label>Beneficio otorgado</label>
+            <input id="promo-beneficio" placeholder="Ej: 15% de descuento en toda la tienda">
+          </div>
+          <div style="grid-column:1 / -1;">
+            <button type="submit" class="btn btn-primary">➕ Crear promoción</button>
+          </div>
+        </form>
+
+        <div id="promo-list" class="promo-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== VISTA: DASHBOARD (PROTEGIDA) ===================== -->
+  <section id="view-dashboard" class="view benefits-scope">
+
+    <div id="dashboard-gate" class="gate-wrap">
+      <div class="lock-icon">🔒</div>
+      <h2 style="margin-bottom:8px;">Dashboard</h2>
+      <p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:20px;">Sección exclusiva para el administrador. Ingresa la contraseña para continuar.</p>
+      <form id="dashboard-gate-form">
+        <div class="field" style="margin-bottom:14px;">
+          <input id="dashboard-gate-password" type="password" placeholder="Contraseña" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary">Desbloquear</button>
+        <p class="gate-error" id="dashboard-gate-error">Código incorrecto. Inténtalo nuevamente.</p>
+      </form>
+    </div>
+
+    <div id="dashboard-content" class="hidden">
+      <div class="hero">
+        <div class="hero-text">
+          <span class="hero-badge">📊 Vista general del club</span>
+          <h2>Dashboard administrativo</h2>
+          <p>Indicadores clave, gráficos y estadísticas del programa de fidelización, calculados en tiempo real.</p>
+        </div>
+      </div>
+
+      <div class="admin-toolbar">
+        <h3 style="color:var(--purple-900);">Resumen general</h3>
+        <button class="btn btn-ghost btn-sm" id="dashboard-lock-btn">🔒 Bloquear sección</button>
+      </div>
+      <div class="stats-row" id="dashboard-kpis" style="grid-template-columns:repeat(4,1fr);"></div>
+
+      <h3 style="color:var(--purple-900); margin:26px 0 4px 0;">📈 Indicadores del Club Pet Shield</h3>
+      <p style="font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;">Se calculan automáticamente a partir de los clientes y compras registrados.</p>
+      <div id="dashboard-indicadores" class="kpi-indicator-grid"></div>
+
+      <h3 style="color:var(--purple-900); margin:26px 0 14px 0;">📊 Gráficos</h3>
+      <div class="charts-grid">
+        <div class="chart-card"><h4>Distribución de clientes por estado</h4><div id="chart-clientes-estado" class="bar-chart"></div></div>
+        <div class="chart-card"><h4>Beneficios más utilizados</h4><div id="chart-beneficios-usados" class="bar-chart"></div></div>
+      </div>
+
+      <div class="academic-note">
+        📎 Este proyecto corresponde a un prototipo académico. Los datos se almacenan localmente en el navegador utilizado para la demostración. Para una implementación empresarial se recomienda conectar el sistema a una base de datos y un sistema de autenticación seguro.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== VISTA: CONFIGURACIÓN (PROTEGIDA) ===================== -->
+  <section id="view-config" class="view benefits-scope">
+
+    <div id="config-gate" class="gate-wrap">
+      <div class="lock-icon">🔒</div>
+      <h2 style="margin-bottom:8px;">Configuración</h2>
+      <p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:20px;">Ajusta los requisitos de los beneficios. Ingresa la contraseña para continuar.</p>
+      <form id="config-gate-form">
+        <div class="field" style="margin-bottom:14px;">
+          <input id="config-gate-password" type="password" placeholder="Contraseña" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary">Desbloquear</button>
+        <p class="gate-error" id="config-gate-error">Código incorrecto. Inténtalo nuevamente.</p>
+      </form>
+    </div>
+
+    <div id="config-content" class="hidden">
+      <div class="hero">
+        <div class="hero-text">
+          <span class="hero-badge">⚙️ Reglas del programa</span>
+          <h2>Configuración de beneficios</h2>
+          <p>Estos valores controlan cuándo un cliente aparece como APTO. Cámbialos aquí — se reflejan de inmediato en "Control de beneficios" y en la página de Inicio, sin tocar código.</p>
+        </div>
+      </div>
+
+      <div class="admin-toolbar">
+        <h3 style="color:var(--purple-900);">Requisitos editables</h3>
+        <button class="btn btn-ghost btn-sm" id="config-lock-btn">🔒 Bloquear sección</button>
+      </div>
+
+      <form id="config-form" class="card">
+        <div class="field-grid">
+          <div class="field"><label>Unidades mínimas para descuento por volumen</label><input type="number" min="1" id="cfg-volume-units"></div>
+          <div class="field"><label>% descuento segunda compra</label><input type="number" min="0" max="100" id="cfg-second-pct"></div>
+          <div class="field"><label>% descuento para el referido</label><input type="number" min="0" max="100" id="cfg-ref-pct"></div>
+          <div class="field"><label>Sellos de bono por referir</label><input type="number" min="0" id="cfg-ref-stamps"></div>
+          <div class="field"><label>% descuento cumpleaños mascota</label><input type="number" min="0" max="100" id="cfg-bday-pct"></div>
+          <div class="field"><label>Días antes del cumpleaños</label><input type="number" min="0" id="cfg-bday-before"></div>
+          <div class="field"><label>Días después del cumpleaños</label><input type="number" min="0" id="cfg-bday-after"></div>
+          <div class="field"><label>Huella Dorada — compras mínimas</label><input type="number" min="0" id="cfg-huella-compras"></div>
+          <div class="field"><label>Huella Dorada — gasto acumulado mínimo ($)</label><input type="number" min="0" step="10000" id="cfg-huella-gasto"></div>
+          <div class="field"><label>Sorteo — compras mínimas</label><input type="number" min="0" id="cfg-raffle-compras"></div>
+          <div class="field"><label>Sorteo — sellos mínimos</label><input type="number" min="0" id="cfg-raffle-sellos"></div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="config-reset-btn" style="flex:1">Restablecer valores por defecto</button>
+          <button type="submit" class="btn btn-primary" style="flex:1">Guardar configuración</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================== VISTA: MENSAJERÍA (PROTEGIDA) ===================== -->
+  <section id="view-messaging" class="view benefits-scope">
+
+    <div id="messaging-gate" class="gate-wrap">
+      <div class="lock-icon">🔒</div>
+      <h2 style="margin-bottom:8px;">Mensajería</h2>
+      <p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:20px;">Sección exclusiva para el administrador. Ingresa la contraseña para continuar.</p>
+      <form id="messaging-gate-form">
+        <div class="field" style="margin-bottom:14px;">
+          <input id="messaging-gate-password" type="password" placeholder="Contraseña" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary">Desbloquear</button>
+        <p class="gate-error" id="messaging-gate-error">Código incorrecto. Inténtalo nuevamente.</p>
+      </form>
+    </div>
+
+    <div id="messaging-content" class="hidden">
+      <div class="hero">
+        <div class="hero-text">
+          <span class="hero-badge">📣 Campañas por segmento</span>
+          <h2>Mensajería</h2>
+          <p>Filtra clientes por sellos, tipo de mascota o compras, escribe un mensaje y envíalo por WhatsApp o correo, uno por uno o a todo el grupo.</p>
+        </div>
+      </div>
+
+      <div class="admin-toolbar">
+        <div></div>
+        <button class="btn btn-ghost btn-sm" id="messaging-lock-btn">🔒 Bloquear sección</button>
+      </div>
+
+      <h3 style="color:var(--purple-900); margin-bottom:10px;">1. Filtra a quién le vas a escribir</h3>
+      <div class="card msg-filter-card">
+        <div class="field-grid">
+          <div class="field"><label>Sellos mínimos</label><input type="number" id="msg-filter-sellos-min" min="0" max="10" value="0"></div>
+          <div class="field"><label>Sellos máximos</label><input type="number" id="msg-filter-sellos-max" min="0" max="10" value="10"></div>
+          <div class="field">
+            <label>Tipo de mascota</label>
+            <select id="msg-filter-tipo">
+              <option value="">Todos</option>
+              <option value="Perro">Perro</option>
+              <option value="Gato">Gato</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Compras</label>
+            <select id="msg-filter-compras">
+              <option value="">Todos</option>
+              <option value="con">Solo con compras</option>
+              <option value="sin">Solo sin compras</option>
+            </select>
+          </div>
+          <div class="field" style="grid-column:1 / -1;">
+            <label>Beneficio que cumple actualmente</label>
+            <select id="msg-filter-beneficio">
+              <option value="">Todos (sin filtrar por beneficio)</option>
+              <option value="volumen">📦 Compra de 6+ unidades</option>
+              <option value="segunda">🥈 Segunda compra</option>
+              <option value="referidoBono">🤝 Bono por referir</option>
+              <option value="referidoDescuento">🎁 Descuento por ser referido</option>
+              <option value="cumple">🎂 Cumpleaños de mascota</option>
+              <option value="huella">🐾 Huella Dorada</option>
+              <option value="sorteo">🎟️ Sorteo mensual</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="msg-search-btn" style="margin-top:14px;">🔎 Buscar clientes que cumplan esto</button>
+      </div>
+
+      <h3 style="color:var(--purple-900); margin:22px 0 6px;">2. Selecciona a quién le llega (<span id="msg-found-count">0</span> cliente(s) encontrado(s))</h3>
+      <div class="msg-select-actions">
+        <button type="button" class="btn-link" id="msg-select-all">Marcar todos</button>
+        <button type="button" class="btn-link" id="msg-select-none">Desmarcar todos</button>
+      </div>
+      <div id="msg-clients-list" class="msg-clients-list">
+        <div class="empty-state"><span class="emoji">🐾</span><p>Usa los filtros de arriba y presiona "Buscar clientes" para ver resultados aquí.</p></div>
+      </div>
+
+      <h3 style="color:var(--purple-900); margin:22px 0 10px;">3. Escribe el mensaje</h3>
+      <div class="card">
+        <div class="field">
+          <label>Mensaje (puedes usar {nombre} y {mascota} para personalizarlo)</label>
+          <textarea id="msg-text" rows="4" placeholder="Ej: ¡Hola {nombre}! 🐾 {mascota} ya casi completa su tarjeta Pet Shield. Ven a tu tienda más cercana y sigue acumulando sellos."></textarea>
+        </div>
+        <div class="msg-copy-actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="msg-copy-phones">📋 Copiar celulares</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="msg-copy-emails">📋 Copiar correos</button>
+        </div>
+        <p class="msg-warning">⚠️ Esta plataforma no tiene un servicio de envío masivo automático (eso requeriría conectar una API de WhatsApp Business o un servicio de correo). Lo que hace es preparar el mensaje personalizado de cada cliente para que lo envíes con un clic, uno por uno, desde tu WhatsApp o correo.</p>
+      </div>
+
+      <h3 style="color:var(--purple-900); margin:22px 0 4px;">4. Enviar</h3>
+      <p style="font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;">Escribe el mensaje para generar los enlaces de envío.</p>
+      <div id="msg-send-links" class="msg-send-links"></div>
+    </div>
+  </section>
+
+  <section id="view-crm" class="view benefits-scope">
+
+    <div id="crm-gate" class="gate-wrap">
+      <div class="lock-icon">🔒</div>
+      <h2 style="margin-bottom:8px;">CRM</h2>
+      <p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:20px;">Sección exclusiva para gerencia. Ingresa la contraseña para continuar.</p>
+      <form id="crm-gate-form">
+        <div class="field" style="margin-bottom:14px;">
+          <input id="crm-gate-password" type="password" placeholder="Contraseña" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary">Desbloquear</button>
+        <p class="gate-error" id="crm-gate-error">Código incorrecto. Inténtalo nuevamente.</p>
+      </form>
+    </div>
+
+    <div id="crm-content" class="hidden">
+      <div class="hero">
+        <div class="hero-text">
+          <span class="hero-badge">📊 Solo gerencia</span>
+          <h2>CRM de clientes</h2>
+          <p>Estadísticas de compras, historial detallado y contacto con clientes desde una base de datos en Excel independiente del club.</p>
+        </div>
+      </div>
+
+      <div class="admin-toolbar">
+        <div></div>
+        <button class="btn btn-ghost btn-sm" id="crm-lock-btn">🔒 Bloquear sección</button>
+      </div>
+
+      <div class="card" style="text-align:center; padding:32px 20px;">
+        <div style="font-size:40px; margin-bottom:10px;">📊</div>
+        <h3 style="color:var(--purple-900); margin-bottom:8px;">Abrir el CRM completo</h3>
+        <p style="font-size:13.5px; color:var(--ink-soft); margin-bottom:20px; max-width:420px; margin-left:auto; margin-right:auto;">
+          El CRM se abre en una pestaña nueva. Ahí puedes conectar tu archivo Excel, ver estadísticas, filtrar clientes y contactarlos por WhatsApp o correo.
+        </p>
+        <a href="crm.html" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none; display:inline-block;">🔗 Abrir CRM en pestaña nueva</a>
+        <p style="font-size:11.5px; color:var(--ink-soft); margin-top:16px;">⚠️ Recuerda subir también el archivo <strong>crm.html</strong> a la misma carpeta de tu sitio web para que este enlace funcione.</p>
+      </div>
+
+      <div class="card" style="margin-top:18px;">
+        <h3 style="color:var(--purple-900); margin-bottom:6px; font-size:15px;">🔄 Sincronizar Excel del CRM</h3>
+        <p style="font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;">Exporta un Excel con los clientes y compras REALES del club (con la misma estructura que espera el CRM), o importa un Excel de compras para crear clientes nuevos automáticamente.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary" id="export-crm-btn">📤 Exportar Excel para el CRM</button>
+          <label class="btn btn-secondary" style="margin:0;">📥 Importar Excel de compras
+            <input type="file" id="import-crm-input" accept=".xlsx,.xls" style="display:none;" onchange="importClientsFromExcelFile(this)">
+          </label>
+        </div>
+        <p id="crm-import-status" style="font-size:12px; margin-top:10px;"></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Club Pet Shield · © 2026</footer>
+
+<!-- ===================== MODAL (detalle / edición / ficha) ===================== -->
+<div id="modal-overlay" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title">Detalle</h3>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Firebase (Firestore): permite que TODOS los dispositivos compartan la misma base de datos en la nube -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<!-- SheetJS: permite leer/generar archivos Excel (.xlsx) para el CRM -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script>
+/* =========================================================
+   CLUB PET SHIELD — plataforma unificada (un solo archivo)
+   Incluye TODO: registro de clientes, consulta de sellos,
+   agregar sello, ver registros y control de beneficios.
+   Las secciones internas (Agregar sello, Ver registros,
+   Control de beneficios) están protegidas con contraseña.
+
+   Persistencia: Firebase Firestore (base de datos en la nube compartida
+   entre todos los dispositivos), con localStorage como caché local para
+   carga instantánea. Ver instrucciones de configuración más abajo, junto
+   a "firebaseConfig".
+   ========================================================= */
+
+/* ---------------- DATOS INICIALES (semilla) ----------------
+   Estos son los clientes reales importados desde el Excel del CRM
+   (CRM_Mascotas_2026-07-23.xlsx, hoja "Base de datos Persona Natural"),
+   para que el club y el CRM arranquen mostrando exactamente los mismos
+   registros. Una vez que la app se conecta a Firebase o el gerente edita
+   datos desde el panel, esta semilla deja de usarse (solo aplica la
+   primera vez que se abre la app, cuando todavía no hay base de datos
+   guardada). */
+const SEED_DB = {"nextSeq": 1, "clients": []};
+
+/* ---------------- CONFIGURACIÓN ---------------- */
+const CONFIG = {
+  storageKey: "petshield_db",
+  // Contraseña de las secciones internas (Agregar sello, Ver registros,
+  // Control de beneficios). Para cambiarla, edita este valor y vuelve
+  // a guardar el archivo (ver README.md).
+  adminPassword: "2026",
+  maxStamps: 10,
+  codePrefix: "PET-",
+  // Precio unitario por talla — el monto de cada compra se calcula
+  // automáticamente como unidades × precio de la talla seleccionada.
+  tallaPrices: {
+    "S": 120000,
+    "M": 140000,
+    "L": 160000,
+    "XL": 180000,
+    "XXL": 200000,
+    "XXXL": 220000
+  },
+  // Parámetros del motor de beneficios — ajustables según las reglas
+  // reales del negocio.
+  benefits: {
+    volumeMinUnits: 6,                 // unidades mínimas para el descuento por volumen
+    secondPurchaseDiscount: 5,         // % en la segunda compra
+    referralDiscount: 5,               // % para el nuevo cliente referido
+    referralBonusStamps: 1,            // sellos de bono para quien refiere
+    birthdayDiscount: 10,              // % por cumpleaños de la mascota
+    birthdayWindowDaysBefore: 7,
+    birthdayWindowDaysAfter: 7,
+    huellaDoradaMinCompras: 5,         // compras mínimas para Huella Dorada
+    huellaDoradaMinGasto: 500000,      // gasto acumulado mínimo (COP) para Huella Dorada
+    raffleMinCompras: 3,               // compras mínimas para sorteo mensual
+    raffleMinSellos: 5                 // o sellos mínimos para sorteo mensual
+  }
+};
+
+/* ---------------- FIREBASE: SINCRONIZACIÓN EN LA NUBE ----------------
+   Toda la base de datos del club (clientes, compras, sellos, etc.) se
+   guarda en UN documento de Firestore. Así, cualquier celular que abra
+   esta misma página ve y actualiza los mismos registros en tiempo real.
+
+   CÓMO CONECTAR TU PROPIO PROYECTO (gratis):
+   1) Ve a https://console.firebase.google.com y crea un proyecto.
+   2) Dentro del proyecto: "Compilación" → "Firestore Database" →
+      "Crear base de datos" (elige una región cercana, ej. us-east1).
+   3) En "Reglas" de Firestore, para empezar puedes usar (luego lo
+      puedes reforzar con autenticación si quieres más seguridad):
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /petshield/{doc} {
+              allow read, write: if true;
+            }
+          }
+        }
+   4) En "Configuración del proyecto" (ícono de engranaje) → baja hasta
+      "Tus apps" → agrega una app Web (</>) → copia el objeto
+      firebaseConfig que te muestra y pégalo abajo, reemplazando el de
+      ejemplo.
+   ======================================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyDsUpN-QU8u1D1i8weYNlrAbe89TVcTwhM",
+  authDomain: "pet-shield-5c09d.firebaseapp.com",
+  projectId: "pet-shield-5c09d",
+  storageBucket: "pet-shield-5c09d.firebasestorage.app",
+  messagingSenderId: "58427582156",
+  appId: "1:58427582156:web:8527de06115c99bbc08469",
+  measurementId: "G-XS39JJ7S4R"
+};
+let fsDocRef = null;
+try{
+  if(firebaseConfig.apiKey !== "TU_API_KEY"){
+    firebase.initializeApp(firebaseConfig);
+    fsDocRef = firebase.firestore().collection("petshield").doc("club-db");
+  }else{
+    console.warn("Firebase no está configurado todavía: edita firebaseConfig con tus propias credenciales.");
+  }
+}catch(e){
+  console.error("No se pudo iniciar Firebase. Revisa firebaseConfig.", e);
+}
+
+/* ---------------- ESTADO Y PERSISTENCIA ---------------- */
+function normalizeCompra(p){
+  // Compatibilidad con compras antiguas (unidades/monto) + nuevos campos ampliados.
+  if(p.cantidad === undefined) p.cantidad = p.unidades || 1;
+  if(p.unidades === undefined) p.unidades = p.cantidad;
+  if(p.precioUnitario === undefined) p.precioUnitario = p.talla ? (CONFIG.tallaPrices[p.talla] || 0) : (p.cantidad ? Math.round((p.monto || 0) / p.cantidad) : 0);
+  if(p.descuento === undefined) p.descuento = 0;
+  if(p.valorTotal === undefined) p.valorTotal = p.monto !== undefined ? p.monto : Math.max(0, (p.cantidad * p.precioUnitario) - p.descuento);
+  if(p.monto === undefined) p.monto = p.valorTotal;
+  if(p.producto === undefined) p.producto = "Producto Pet Shield";
+  if(p.metodoPago === undefined) p.metodoPago = "No especificado";
+  if(p.canal === undefined) p.canal = "No especificado";
+  if(p.asesor === undefined) p.asesor = "";
+  if(p.beneficioUtilizado === undefined) p.beneficioUtilizado = "";
+  if(p.codigoPromocion === undefined) p.codigoPromocion = "";
+  return p;
+}
+function ensureClientDefaults(c){
+  if(!Array.isArray(c.compras)) c.compras = [];
+  c.compras.forEach(normalizeCompra);
+  if(!c.beneficiosUsados || typeof c.beneficiosUsados !== "object") c.beneficiosUsados = {};
+  return c;
+}
+function ensureDBDefaults(db){
+  if(!Array.isArray(db.clients)) db.clients = [];
+  if(!Array.isArray(db.promotions)) db.promotions = [];
+  if(!Array.isArray(db.usageLog)) db.usageLog = [];
+  if(!db.settings || typeof db.settings !== "object") db.settings = {};
+  if(!db.settings.benefits || typeof db.settings.benefits !== "object") db.settings.benefits = {};
+  db.clients.forEach(ensureClientDefaults);
+  return db;
+}
+// Devuelve los parámetros de beneficios EFECTIVOS: los valores por defecto de
+// CONFIG.benefits, sobrescritos por lo que el administrador haya guardado en
+// "⚙️ Configuración". Así los umbrales quedan editables sin tocar el código.
+function getBenefitsConfig(){
+  return Object.assign({}, CONFIG.benefits, (DB.settings && DB.settings.benefits) || {});
+}
+function loadDB(){
+  let raw = null;
+  try{
+    raw = localStorage.getItem(CONFIG.storageKey);
+  }catch(e){
+    console.error("No se pudo leer el almacenamiento local del navegador.", e);
+    toastQueueStorageWarning();
+  }
+  if(!raw){
+    // Primer arranque (sin datos guardados todavía en este navegador/nube):
+    // se carga la semilla con los clientes reales del Excel del CRM, para
+    // que el club y el CRM muestren los mismos registros desde el inicio.
+    const initial = ensureDBDefaults(JSON.parse(JSON.stringify(SEED_DB)));
+    persistDB(initial);
+    return initial;
+  }
+  try{
+    return ensureDBDefaults(JSON.parse(raw));
+  }catch(e){
+    console.error("Error leyendo la base de datos local, se reinicia.", e);
+    const initial = ensureDBDefaults(JSON.parse(JSON.stringify(SEED_DB)));
+    persistDB(initial);
+    return initial;
+  }
+}
+let storageWarningShown = false;
+function toastQueueStorageWarning(){
+  // Se llama antes de que exista el DOM en algunos casos; se difiere.
+  if(storageWarningShown) return;
+  storageWarningShown = true;
+  window.addEventListener("DOMContentLoaded", () => {
+    toast("Tu navegador está bloqueando el guardado local. Activa las cookies/almacenamiento para no perder los registros.", "error");
+  });
+}
+function persistDB(db){
+  // Caché local: permite que la app cargue al instante y funcione
+  // brevemente sin conexión, aunque la fuente de verdad es la nube.
+  try{
+    localStorage.setItem(CONFIG.storageKey, JSON.stringify(db));
+  }catch(e){
+    console.error("No se pudo guardar en el almacenamiento local.", e);
+  }
+  if(fsDocRef){
+    fsDocRef.set(db).catch(err => {
+      console.error("No se pudo sincronizar con la nube.", err);
+      toast("⚠️ No se pudo sincronizar con la nube. Revisa tu conexión a internet.", "error");
+    });
+    return true;
+  }else{
+    toast("⚠️ La sincronización en la nube no está configurada (ver firebaseConfig).", "error");
+    return false;
+  }
+}
+function saveDB(db){
+  return persistDB(db);
+}
+let DB = loadDB();
+let adminUnlocked = false;
+let benefitsUnlocked = false;
+
+// Escucha cambios en tiempo real: si tú o tu compañera crean/editan un
+// registro desde cualquier celular, aquí llega la actualización al instante.
+if(fsDocRef){
+  fsDocRef.onSnapshot(snap => {
+    if(snap.exists){
+      DB = ensureDBDefaults(snap.data());
+      try{ localStorage.setItem(CONFIG.storageKey, JSON.stringify(DB)); }catch(e){}
+      refreshActiveView();
+    }else{
+      // Aún no existe el documento en la nube (primer uso): lo creamos
+      // con lo que haya localmente.
+      fsDocRef.set(DB).catch(err => console.error("No se pudo crear el documento inicial en la nube.", err));
+    }
+  }, err => {
+    console.error("Error escuchando cambios en la nube.", err);
+    toast("⚠️ Se perdió la conexión con la nube. Tus cambios se guardan localmente mientras se restablece.", "error");
+  });
+}
+// Re-renderiza la vista actualmente visible con los datos más recientes,
+// sin mover el scroll ni cambiar de pestaña (a diferencia de showView).
+function refreshActiveView(){
+  const activeView = document.querySelector(".view.active");
+  if(!activeView) return;
+  const id = activeView.id;
+  if(id === "view-admin" && adminUnlocked) renderAdminTable();
+  if(id === "view-benefits" && benefitsUnlocked){
+    renderBenefitRequirements();
+    renderBenefitsDashboard();
+    renderPromoList();
+  }
+  if(id === "view-dashboard" && dashboardUnlocked) renderDashboard();
+  if(id === "view-home") renderHomeDynamicValues();
+  if(id === "view-messaging" && messagingUnlocked && typeof msgSearch === "function" && msgResults.length) msgSearch();
+}
+
+/* ---------------- UTILIDADES ---------------- */
+function generateCode(db){
+  const code = CONFIG.codePrefix + String(db.nextSeq).padStart(6, "0");
+  db.nextSeq += 1;
+  return code;
+}
+function todayISO(){
+  return new Date().toISOString().slice(0,10);
+}
+function formatDate(iso){
+  if(!iso) return "—";
+  const [y,m,d] = iso.split("-");
+  if(!y||!m||!d) return iso;
+  return `${d}/${m}/${y}`;
+}
+function normalizePhone(v){
+  return String(v || "").replace(/\D/g, "");
+}
+function formatMoney(n){
+  const num = Number(n) || 0;
+  return "$" + num.toLocaleString("es-CO");
+}
+function toast(message, type="success"){
+  const container = document.getElementById("toast-container");
+  const el = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type === "success" ? "🐾" : "⚠️"}</span><span>${message}</span>`;
+  container.appendChild(el);
+  setTimeout(() => { el.remove(); }, 3200);
+}
+function escapeHTML(str){
+  return String(str ?? "").replace(/[&<>"']/g, s => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[s]));
+}
+
+/* ---------------- NAVEGACIÓN ---------------- */
+function showView(id){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav-tabs button").forEach(b => {
+    b.classList.toggle("active", b.dataset.target === id);
+  });
+  if(id === "view-admin" && adminUnlocked){
+    renderAdminTable();
+  }
+  if(id === "view-benefits" && benefitsUnlocked){
+    renderBenefitRequirements();
+    renderBenefitsDashboard();
+    renderPromoList();
+  }
+  if(id === "view-dashboard" && dashboardUnlocked){
+    renderDashboard();
+  }
+  if(id === "view-config" && configUnlocked){
+    fillConfigForm();
+  }
+  if(id === "view-home"){
+    renderHomeDynamicValues();
+  }
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+document.querySelectorAll(".nav-tabs button").forEach(btn => {
+  btn.addEventListener("click", () => showView(btn.dataset.target));
+});
+
+/* ---------------- FILA DE SELLOS (helper visual) ---------------- */
+function stampRowHTML(sellos){
+  let html = "";
+  for(let i = 1; i <= CONFIG.maxStamps; i++){
+    const filled = i <= sellos;
+    html += `<div class="stamp${filled ? " filled" : ""}">${filled ? "🐾" : i}</div>`;
+  }
+  return html;
+}
+function renderStampRow(container, sellos){
+  container.innerHTML = stampRowHTML(sellos);
+}
+
+
+/* ---------------- REGISTRO DE CLIENTES ---------------- */
+const registerForm = document.getElementById("register-form");
+
+function clearFieldErrors(form){
+  form.querySelectorAll(".field").forEach(f => f.classList.remove("error"));
+}
+function markFieldError(input, message){
+  const field = input.closest(".field");
+  field.classList.add("error");
+  const msg = field.querySelector(".field-error-msg");
+  if(msg) msg.textContent = message;
+}
+function validateRegisterForm(form){
+  clearFieldErrors(form);
+  let valid = true;
+  const requiredFields = form.querySelectorAll("[data-required='true']");
+  requiredFields.forEach(input => {
+    if(!input.value || (input.type === "checkbox" && !input.checked)){
+      markFieldError(input, "Este campo es obligatorio.");
+      valid = false;
+    }
+  });
+  const email = form.querySelector("#f-correo");
+  if(email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){
+    markFieldError(email, "Ingresa un correo válido.");
+    valid = false;
+  }
+  const phone = form.querySelector("#f-celular");
+  if(phone.value && !/^[0-9+()\s-]{7,15}$/.test(phone.value)){
+    markFieldError(phone, "Ingresa un número válido.");
+    valid = false;
+  }
+  return valid;
+}
+
+registerForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if(!validateRegisterForm(registerForm)){
+    toast("Revisa los campos marcados en rojo.", "error");
+    return;
+  }
+  const fd = new FormData(registerForm);
+  const correoVal = fd.get("correo").trim().toLowerCase();
+  const celularVal = normalizePhone(fd.get("celular"));
+
+  // Un cliente solo puede registrarse una vez: se valida por correo y por celular.
+  const duplicate = DB.clients.find(c =>
+    c.correo.trim().toLowerCase() === correoVal ||
+    normalizePhone(c.celular) === celularVal
+  );
+  if(duplicate){
+    markFieldError(document.getElementById("f-correo"), "Ya existe un registro con este correo.");
+    markFieldError(document.getElementById("f-celular"), "Ya existe un registro con este celular.");
+    toast(`Ya estás registrado en el Club Pet Shield (código ${duplicate.code}). Cada persona puede registrarse una sola vez.`, "error");
+    return;
+  }
+
+  const code = generateCode(DB);
+  const client = {
+    code,
+    nombre: fd.get("nombre").trim(),
+    celular: fd.get("celular").trim(),
+    correo: fd.get("correo").trim(),
+    fechaNacimiento: fd.get("fechaNacimiento") || "",
+    mascotaNombre: fd.get("mascotaNombre").trim(),
+    mascotaTipo: fd.get("mascotaTipo"),
+    raza: fd.get("raza").trim(),
+    fechaCumple: fd.get("fechaCumple") || "",
+    comoConocio: fd.get("comoConocio"),
+    referido: (fd.get("referido") || "").trim(),
+    fechaRegistro: todayISO(),
+    sellos: 0,
+    compras: [],
+    beneficiosUsados: {}
+  };
+  DB.clients.push(client);
+  const savedOk = saveDB(DB);
+  renderWelcomePanel(client);
+  registerForm.reset();
+  if(savedOk){
+    toast(`¡Registrado con éxito! Código ${code}`, "success");
+  }
+});
+
+/* ---------------- PANEL DE BIENVENIDA (tras registro) ---------------- */
+function renderWelcomePanel(client){
+  const panel = document.getElementById("welcome-panel");
+  panel.classList.remove("hidden");
+  document.getElementById("welcome-empty").classList.add("hidden");
+  document.getElementById("welcome-code").textContent = client.code;
+  document.getElementById("welcome-owner").textContent = client.nombre;
+  document.getElementById("welcome-pet").textContent = client.mascotaNombre;
+  renderStampRow(document.getElementById("welcome-stamps"), client.sellos);
+  const pct = Math.round((client.sellos / CONFIG.maxStamps) * 100);
+  document.getElementById("welcome-progress-fill").style.width = pct + "%";
+  document.getElementById("welcome-progress-caption").textContent =
+    client.sellos >= CONFIG.maxStamps
+      ? "¡Tarjeta completa!"
+      : `${client.sellos} / ${CONFIG.maxStamps} sellos · faltan ${CONFIG.maxStamps - client.sellos} para completar`;
+  document.getElementById("welcome-complete").classList.toggle("show", client.sellos >= CONFIG.maxStamps);
+}
+
+
+/* ---------------- CONSULTA DE TARJETA (sellos) ---------------- */
+const lookupForm = document.getElementById("lookup-form");
+lookupForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const input = document.getElementById("lookup-input").value.trim().toUpperCase();
+  const resultBox = document.getElementById("lookup-result");
+  const emptyBox = document.getElementById("lookup-empty");
+  if(!input){
+    toast("Escribe tu código de cliente.", "error");
+    return;
+  }
+  const client = DB.clients.find(c =>
+    c.code.toUpperCase() === input ||
+    c.code.toUpperCase() === (CONFIG.codePrefix + input.padStart(6,"0"))
+  );
+  if(!client){
+    resultBox.classList.add("hidden");
+    emptyBox.classList.remove("hidden");
+    emptyBox.querySelector(".empty-msg").textContent =
+      "No encontramos ese código. Verifica e inténtalo nuevamente.";
+    return;
+  }
+  emptyBox.classList.add("hidden");
+  resultBox.classList.remove("hidden");
+  document.getElementById("lookup-owner").textContent = client.nombre;
+  document.getElementById("lookup-pet").textContent = client.mascotaNombre;
+  document.getElementById("lookup-code").textContent = client.code;
+  document.getElementById("lookup-count").textContent = `${client.sellos} / ${CONFIG.maxStamps}`;
+  renderStampRow(document.getElementById("lookup-stamps"), client.sellos);
+  const pct = Math.round((client.sellos / CONFIG.maxStamps) * 100);
+  document.getElementById("lookup-progress-fill").style.width = pct + "%";
+  document.getElementById("lookup-progress-caption").textContent =
+    client.sellos >= CONFIG.maxStamps
+      ? "¡Tarjeta completa!"
+      : `Faltan ${CONFIG.maxStamps - client.sellos} sellos para completar la tarjeta.`;
+  document.getElementById("lookup-complete").classList.toggle("show", client.sellos >= CONFIG.maxStamps);
+});
+
+/* ---------------- ACCESO PROTEGIDO: AGREGAR SELLO ---------------- */
+let addStampUnlocked = false;
+const addstampGateForm = document.getElementById("addstamp-gate-form");
+addstampGateForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const pass = document.getElementById("addstamp-gate-password").value;
+  const errorEl = document.getElementById("addstamp-gate-error");
+  if(pass === CONFIG.adminPassword){
+    addStampUnlocked = true;
+    document.getElementById("addstamp-gate").classList.add("hidden");
+    document.getElementById("addstamp-content").classList.remove("hidden");
+    errorEl.classList.remove("show");
+    addstampGateForm.reset();
+  }else{
+    errorEl.textContent = "Código incorrecto. Inténtalo nuevamente.";
+    errorEl.classList.add("show");
+  }
+});
+document.getElementById("addstamp-lock-btn").addEventListener("click", () => {
+  addStampUnlocked = false;
+  document.getElementById("addstamp-content").classList.add("hidden");
+  document.getElementById("addstamp-gate").classList.remove("hidden");
+});
+
+/* ---------------- AGREGAR SELLO POR RECOMPRA (búsqueda rápida) ---------------- */
+const quickInput = document.getElementById("quicksearch-input");
+quickInput.addEventListener("input", renderQuickSearch);
+
+function renderQuickSearch(){
+  const q = quickInput.value.trim().toLowerCase();
+  const resultsBox = document.getElementById("quicksearch-results");
+  const emptyBox = document.getElementById("quicksearch-empty");
+
+  if(!q){
+    resultsBox.innerHTML = "";
+    emptyBox.classList.remove("hidden");
+    emptyBox.querySelector("p").textContent = "Escribe el nombre o el código del cliente para encontrar su tarjeta.";
+    return;
+  }
+
+  const matches = DB.clients.filter(c =>
+    c.nombre.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)
+  );
+
+  if(matches.length === 0){
+    resultsBox.innerHTML = "";
+    emptyBox.classList.remove("hidden");
+    emptyBox.querySelector("p").textContent = "No encontramos ningún cliente con ese nombre o código.";
+    return;
+  }
+
+  emptyBox.classList.add("hidden");
+  resultsBox.innerHTML = matches.map(c => `
+    <div class="quick-card">
+      <div class="quick-card-head">
+        <div>
+          <strong>${escapeHTML(c.nombre)}</strong>
+          <span class="quick-pet">${escapeHTML(c.mascotaNombre)} · ${escapeHTML(c.mascotaTipo)}</span>
+        </div>
+        <span class="code-pill">${escapeHTML(c.code)}</span>
+      </div>
+      <div class="stamp-row">${stampRowHTML(c.sellos)}</div>
+      <div class="quick-card-actions">
+        <span class="progress-caption">${c.sellos} / ${CONFIG.maxStamps} sellos · ${c.compras.length} compra(s)</span>
+      </div>
+      <div class="quick-btn-row">
+        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="openPurchaseModal('${c.code}')">🧾 Registrar compra</button>
+        <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="quickAddStampOnly('${c.code}')">🐾 Agregar sello</button>
+      </div>
+      ${c.sellos >= CONFIG.maxStamps ? `<p class="quick-complete" style="margin-top:8px;">¡Tarjeta completa! 🎉 (puedes seguir registrando compras, sin sumar más sellos)</p>` : ""}
+    </div>
+  `).join("");
+}
+
+function quickAddStampOnly(code){
+  const c = findClient(code);
+  if(!c) return;
+  if(c.sellos >= CONFIG.maxStamps){
+    toast("Esta tarjeta ya está completa.", "error");
+    return;
+  }
+  c.sellos += 1;
+  saveDB(DB);
+  renderQuickSearch();
+  if(adminUnlocked) renderAdminTable();
+  if(benefitsUnlocked) renderBenefitsDashboard();
+  if(c.sellos >= CONFIG.maxStamps){
+    toast(`🎉 ¡${c.nombre} completó su tarjeta de fidelización!`, "success");
+  }else{
+    toast(`✓ Sello agregado (${c.sellos}/${CONFIG.maxStamps}).`, "success");
+  }
+}
+
+/* ---------------- REGISTRO AMPLIADO DE COMPRA (modal) ---------------- */
+const PAYMENT_METHODS = ["Efectivo", "Nequi", "Daviplata", "Transferencia", "Tarjeta", "Otro"];
+const PURCHASE_CHANNELS = ["Instagram", "WhatsApp", "Mercado Libre", "Tienda física", "Otro"];
+const BENEFIT_OPTIONS = [
+  { value: "", label: "Ninguno" },
+  { value: "volumen", label: "Descuento por 6+ unidades" },
+  { value: "segunda", label: "Segunda compra (5%)" },
+  { value: "referidoDescuento", label: "Descuento por ser referido" },
+  { value: "cumple", label: "Cumpleaños de la mascota" },
+  { value: "promocion", label: "Promoción de temporada" }
+];
+
+function openPurchaseModal(code){
+  const c = findClient(code);
+  if(!c) return;
+  document.querySelector(".modal-box").classList.add("modal-wide");
+  openModal(`🧾 Registrar compra — ${c.nombre}`);
+  const tallaOptions = Object.keys(CONFIG.tallaPrices)
+    .map(t => `<option value="${t}">${t} — ${formatMoney(CONFIG.tallaPrices[t])}</option>`).join("");
+  const activePromos = DB.promotions.filter(p => todayISO() >= p.fechaInicio && todayISO() <= p.fechaFin);
+
+  modalBody.innerHTML = `
+    <form id="purchase-form">
+      <div class="field-grid">
+        <div class="field"><label>Fecha de compra</label><input type="date" id="pf-fecha" value="${todayISO()}" required></div>
+        <div class="field"><label>Producto</label><input id="pf-producto" placeholder="Ej: Correa antitirones" value="Producto Pet Shield"></div>
+        <div class="field"><label>Talla</label>
+          <select id="pf-talla" onchange="updatePurchaseCalc()">
+            <option value="">Sin talla</option>
+            ${tallaOptions}
+          </select>
+        </div>
+        <div class="field"><label>Cantidad</label><input type="number" min="1" step="1" value="1" id="pf-cantidad" oninput="updatePurchaseCalc()"></div>
+        <div class="field"><label>Precio unitario</label><input type="number" min="0" step="1000" value="0" id="pf-precio" oninput="updatePurchaseCalc()"></div>
+        <div class="field"><label>Descuento aplicado ($)</label><input type="number" min="0" step="1000" value="0" id="pf-descuento" oninput="updatePurchaseCalc()"></div>
+        <div class="field"><label>Método de pago</label>
+          <select id="pf-metodo">${PAYMENT_METHODS.map(m => `<option>${m}</option>`).join("")}</select>
+        </div>
+        <div class="field"><label>Canal de compra</label>
+          <select id="pf-canal">${PURCHASE_CHANNELS.map(m => `<option>${m}</option>`).join("")}</select>
+        </div>
+        <div class="field"><label>Nombre del asesor</label><input id="pf-asesor" placeholder="Tu nombre"></div>
+        <div class="field"><label>Beneficio utilizado en esta compra</label>
+          <select id="pf-beneficio">${BENEFIT_OPTIONS.map(b => `<option value="${b.value}">${b.label}</option>`).join("")}</select>
+        </div>
+        <div class="field" style="grid-column:1 / -1;"><label>Código de promoción (si existe)</label>
+          <input id="pf-promo" list="pf-promo-list" placeholder="Ej: HALLOWEEN2026">
+          <datalist id="pf-promo-list">
+            ${activePromos.map(p => `<option value="${escapeHTML(p.id)}">${escapeHTML(p.nombre)}</option>`).join("")}
+          </datalist>
+        </div>
+      </div>
+      <div class="purchase-calc-box">
+        <div><span>Subtotal (cantidad × precio unitario)</span><strong id="pf-subtotal">$0</strong></div>
+        <div><span>Descuento</span><strong id="pf-descuento-view">$0</strong></div>
+        <div class="purchase-calc-total"><span>Valor total</span><strong id="pf-total">$0</strong></div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" class="btn btn-secondary" style="flex:1" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" style="flex:1">Registrar compra</button>
+      </div>
+    </form>
+  `;
+
+  document.getElementById("purchase-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const cantidad = Math.max(1, parseInt(document.getElementById("pf-cantidad").value, 10) || 1);
+    const precioUnitario = Math.max(0, parseInt(document.getElementById("pf-precio").value, 10) || 0);
+    const descuento = Math.max(0, parseInt(document.getElementById("pf-descuento").value, 10) || 0);
+    const subtotal = cantidad * precioUnitario;
+    const valorTotal = Math.max(0, subtotal - descuento);
+    const compra = normalizeCompra({
+      id: `C-${Date.now()}`,
+      fecha: document.getElementById("pf-fecha").value || todayISO(),
+      producto: document.getElementById("pf-producto").value.trim() || "Producto Pet Shield",
+      talla: document.getElementById("pf-talla").value,
+      cantidad,
+      precioUnitario,
+      descuento,
+      valorTotal,
+      metodoPago: document.getElementById("pf-metodo").value,
+      canal: document.getElementById("pf-canal").value,
+      asesor: document.getElementById("pf-asesor").value.trim(),
+      beneficioUtilizado: document.getElementById("pf-beneficio").value,
+      codigoPromocion: document.getElementById("pf-promo").value.trim()
+    });
+    c.compras.push(compra);
+    saveDB(DB);
+    renderQuickSearch();
+    if(adminUnlocked) renderAdminTable();
+    if(benefitsUnlocked) renderBenefitsDashboard();
+    closeModal();
+    let volumeMsg = "";
+    if(cantidad >= getBenefitsConfig().volumeMinUnits){
+      volumeMsg = ` 🏷️ Aplica descuento por volumen (${cantidad} unidades).`;
+    }
+    toast(`✓ Compra registrada correctamente para ${c.nombre}: ${formatMoney(valorTotal)}.${volumeMsg}`, "success");
+  });
+
+  updatePurchaseCalc();
+}
+
+function updatePurchaseCalc(){
+  const tallaSelect = document.getElementById("pf-talla");
+  const precioInput = document.getElementById("pf-precio");
+  if(tallaSelect && precioInput && tallaSelect.value){
+    precioInput.value = CONFIG.tallaPrices[tallaSelect.value] || 0;
+  }
+  const cantidad = Math.max(1, parseInt(document.getElementById("pf-cantidad").value, 10) || 1);
+  const precioUnitario = Math.max(0, parseInt(precioInput.value, 10) || 0);
+  const descuento = Math.max(0, parseInt(document.getElementById("pf-descuento").value, 10) || 0);
+  const subtotal = cantidad * precioUnitario;
+  const total = Math.max(0, subtotal - descuento);
+  document.getElementById("pf-subtotal").textContent = formatMoney(subtotal);
+  document.getElementById("pf-descuento-view").textContent = formatMoney(descuento);
+  document.getElementById("pf-total").textContent = formatMoney(total);
+}
+
+/* ---------------- ACCESO ADMIN (candado) ---------------- */
+const gateForm = document.getElementById("gate-form");
+gateForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const pass = document.getElementById("gate-password").value;
+  const errorEl = document.getElementById("gate-error");
+  if(pass === CONFIG.adminPassword){
+    adminUnlocked = true;
+    document.getElementById("admin-gate").classList.add("hidden");
+    document.getElementById("admin-panel").classList.remove("hidden");
+    errorEl.classList.remove("show");
+    gateForm.reset();
+    renderAdminTable();
+  }else{
+    errorEl.textContent = "Código incorrecto. Inténtalo nuevamente.";
+    errorEl.classList.add("show");
+  }
+});
+document.getElementById("admin-lock-btn").addEventListener("click", () => {
+  adminUnlocked = false;
+  document.getElementById("admin-panel").classList.add("hidden");
+  document.getElementById("admin-gate").classList.remove("hidden");
+});
+
+/* ---------------- PANEL ADMINISTRATIVO ---------------- */
+const searchInput = document.getElementById("admin-search");
+const filterSelect = document.getElementById("admin-filter-tipo");
+const sellosMinInput = document.getElementById("admin-filter-sellos-min");
+const sellosMaxInput = document.getElementById("admin-filter-sellos-max");
+searchInput.addEventListener("input", renderAdminTable);
+filterSelect.addEventListener("change", renderAdminTable);
+sellosMinInput.addEventListener("input", renderAdminTable);
+sellosMaxInput.addEventListener("input", renderAdminTable);
+
+function getFilteredClients(){
+  const q = searchInput.value.trim().toLowerCase();
+  const tipo = filterSelect.value;
+  const sellosMin = sellosMinInput.value !== "" ? Math.max(0, parseInt(sellosMinInput.value, 10)) : 0;
+  const sellosMax = sellosMaxInput.value !== "" ? Math.min(CONFIG.maxStamps, parseInt(sellosMaxInput.value, 10)) : CONFIG.maxStamps;
+  return DB.clients.filter(c => {
+    const matchesQuery = !q || [c.code, c.nombre, c.correo, c.mascotaNombre, c.celular]
+      .join(" ").toLowerCase().includes(q);
+    const matchesTipo = !tipo || c.mascotaTipo === tipo;
+    const matchesSellos = c.sellos >= sellosMin && c.sellos <= sellosMax;
+    return matchesQuery && matchesTipo && matchesSellos;
+  });
+}
+
+function renderStats(){
+  document.getElementById("stat-total").textContent = DB.clients.length;
+  document.getElementById("stat-complete").textContent =
+    DB.clients.filter(c => c.sellos >= CONFIG.maxStamps).length;
+  const avg = DB.clients.length
+    ? (DB.clients.reduce((sum,c) => sum + c.sellos, 0) / DB.clients.length).toFixed(1)
+    : "0.0";
+  document.getElementById("stat-avg").textContent = avg;
+}
+
+function renderAdminTable(){
+  renderStats();
+  const tbody = document.getElementById("admin-tbody");
+  const list = getFilteredClients();
+  if(list.length === 0){
+    tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; padding:34px; color:var(--ink-soft);">
+      No hay registros que coincidan con la búsqueda.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(c => `
+    <tr>
+      <td><span class="code-pill">${escapeHTML(c.code)}</span></td>
+      <td>${escapeHTML(c.nombre)}</td>
+      <td>${escapeHTML(c.celular)}</td>
+      <td>${escapeHTML(c.correo)}</td>
+      <td>${formatDate(c.fechaNacimiento)}</td>
+      <td>${escapeHTML(c.mascotaNombre)}</td>
+      <td>${escapeHTML(c.mascotaTipo)}</td>
+      <td>${escapeHTML(c.raza)}</td>
+      <td>${formatDate(c.fechaCumple)}</td>
+      <td>${escapeHTML(c.comoConocio)}</td>
+      <td>${escapeHTML(c.referido) || "—"}</td>
+      <td>${formatDate(c.fechaRegistro)}</td>
+      <td class="stamp-mini">${c.sellos} / ${CONFIG.maxStamps} ${c.sellos>=CONFIG.maxStamps ? "✅" : ""}</td>
+      <td>
+        <div class="row-actions">
+          <button class="icon-btn" title="Ver detalle" onclick="openDetail('${c.code}')">👁️</button>
+          <button class="icon-btn" title="Agregar sello" onclick="addStamp('${c.code}')">➕</button>
+          <button class="icon-btn" title="Quitar sello" onclick="removeStamp('${c.code}')">➖</button>
+          <button class="icon-btn" title="Editar" onclick="openEdit('${c.code}')">✏️</button>
+          <button class="icon-btn danger" title="Eliminar" onclick="deleteClient('${c.code}')">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function findClient(code){
+  const c = DB.clients.find(c => c.code === code);
+  if(c) ensureClientDefaults(c);
+  return c;
+}
+
+function addStamp(code){
+  const c = findClient(code);
+  if(!c) return;
+  if(c.sellos >= CONFIG.maxStamps){
+    toast("Esta tarjeta ya está completa.", "error");
+    return;
+  }
+  c.sellos += 1;
+  saveDB(DB);
+  renderAdminTable();
+  if(quickInput.value.trim()) renderQuickSearch();
+  toast(`Sello agregado a ${c.nombre} (${c.sellos}/${CONFIG.maxStamps}).`);
+}
+function removeStamp(code){
+  const c = findClient(code);
+  if(!c) return;
+  if(c.sellos <= 0){
+    toast("Esta tarjeta no tiene sellos para quitar.", "error");
+    return;
+  }
+  c.sellos -= 1;
+  saveDB(DB);
+  renderAdminTable();
+  if(quickInput.value.trim()) renderQuickSearch();
+  toast(`Sello removido de ${c.nombre} (${c.sellos}/${CONFIG.maxStamps}).`);
+}
+function deleteClient(code){
+  const c = findClient(code);
+  if(!c) return;
+  if(!confirm(`¿Eliminar el registro de ${c.nombre} (${c.code})? Esta acción no se puede deshacer.`)) return;
+  DB.clients = DB.clients.filter(cl => cl.code !== code);
+  saveDB(DB);
+  renderAdminTable();
+  toast("Registro eliminado.", "success");
+}
+
+/* ---------------- MODAL: ver detalle / editar ---------------- */
+const modalOverlay = document.getElementById("modal-overlay");
+const modalBody = document.getElementById("modal-body");
+const modalTitle = document.getElementById("modal-title");
+document.getElementById("modal-close").addEventListener("click", closeModal);
+modalOverlay.addEventListener("click", (e) => { if(e.target === modalOverlay) closeModal(); });
+function closeModal(){
+  modalOverlay.classList.add("hidden");
+  modalBody.innerHTML = "";
+  document.querySelector(".modal-box").classList.remove("modal-wide");
+}
+function openModal(title){
+  modalTitle.textContent = title;
+  modalOverlay.classList.remove("hidden");
+}
+
+/* ---------------- Historial de compras (reutilizable en fichas) ---------------- */
+function purchaseStats(c){
+  const n = c.compras.length;
+  const total = c.compras.reduce((s, p) => s + (p.valorTotal || 0), 0);
+  const promedio = n ? Math.round(total / n) : 0;
+  const ultima = n ? c.compras.slice().sort((a, b) => a.fecha.localeCompare(b.fecha))[n - 1] : null;
+  return { n, total, promedio, ultima };
+}
+function purchaseHistoryHTML(c){
+  const stats = purchaseStats(c);
+  if(stats.n === 0){
+    return `<p style="font-size:12.5px; color:var(--ink-soft);">Este cliente todavía no tiene compras registradas.</p>`;
+  }
+  const rows = c.compras.slice().sort((a, b) => b.fecha.localeCompare(a.fecha)).map(p => `
+    <tr>
+      <td>${formatDate(p.fecha)}</td>
+      <td>${escapeHTML(p.producto)}</td>
+      <td>${escapeHTML(p.talla || "—")}</td>
+      <td>${p.cantidad}</td>
+      <td>${formatMoney(p.valorTotal)}</td>
+      <td>${escapeHTML(p.metodoPago)}</td>
+      <td>${escapeHTML(p.canal)}</td>
+    </tr>
+  `).join("");
+  return `
+    <div class="table-wrap" style="max-height:260px; margin-bottom:12px;">
+      <table>
+        <thead><tr><th>Fecha</th><th>Producto</th><th>Talla</th><th>Cant.</th><th>Total</th><th>Método de pago</th><th>Canal</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="purchase-stats-row">
+      <span><strong>${stats.n}</strong> compra(s)</span>
+      <span><strong>${formatMoney(stats.total)}</strong> total comprado</span>
+      <span><strong>${formatMoney(stats.promedio)}</strong> promedio por compra</span>
+      <span>Última compra: <strong>${formatDate(stats.ultima.fecha)}</strong></span>
+    </div>
+  `;
+}
+
+function openDetail(code){
+  const c = findClient(code);
+  if(!c) return;
+  document.querySelector(".modal-box").classList.add("modal-wide");
+  openModal(`Detalle de ${c.nombre}`);
+  modalBody.innerHTML = `
+    <div class="result-pet-row" style="flex-direction:column; gap:12px;">
+      ${detailRow("Código de cliente", c.code)}
+      ${detailRow("Nombre completo", c.nombre)}
+      ${detailRow("Celular", c.celular)}
+      ${detailRow("Correo electrónico", c.correo)}
+      ${detailRow("Fecha de nacimiento", formatDate(c.fechaNacimiento))}
+      ${detailRow("Mascota", `${c.mascotaNombre} · ${c.mascotaTipo}${c.raza ? " · " + c.raza : ""}`)}
+      ${detailRow("Cumpleaños de la mascota", formatDate(c.fechaCumple))}
+      ${detailRow("¿Cómo conoció Pet Shield?", c.comoConocio)}
+      ${detailRow("Código de referido", c.referido || "—")}
+      ${detailRow("Fecha de registro", formatDate(c.fechaRegistro))}
+    </div>
+    <div style="margin-top:18px;">
+      <span style="font-size:11px; color:var(--ink-soft); text-transform:uppercase;">Tarjeta de fidelización</span>
+      <div class="stamp-row" id="detail-stamps" style="margin-top:8px;"></div>
+    </div>
+    <div style="margin-top:20px;">
+      <h4 style="font-size:14px; color:var(--purple-900); margin-bottom:10px;">🧾 Historial de compras</h4>
+      ${purchaseHistoryHTML(c)}
+    </div>
+  `;
+  renderStampRow(document.getElementById("detail-stamps"), c.sellos);
+}
+function detailRow(label, value){
+  return `<div><span style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;">${escapeHTML(label)}</span>
+    <div style="font-size:14.5px;font-weight:600;">${escapeHTML(value)}</div></div>`;
+}
+
+function openEdit(code){
+  const c = findClient(code);
+  if(!c) return;
+  openModal(`Editar cliente — ${c.code}`);
+  modalBody.innerHTML = `
+    <form id="edit-form">
+      <div class="field-grid">
+        <div class="field"><label>Nombre completo</label><input name="nombre" value="${escapeHTML(c.nombre)}" required></div>
+        <div class="field"><label>Número de celular</label><input name="celular" value="${escapeHTML(c.celular)}" required></div>
+        <div class="field"><label>Correo electrónico</label><input name="correo" type="email" value="${escapeHTML(c.correo)}" required></div>
+        <div class="field"><label>Fecha de nacimiento</label><input name="fechaNacimiento" type="date" value="${c.fechaNacimiento}"></div>
+        <div class="field"><label>Nombre de la mascota</label><input name="mascotaNombre" value="${escapeHTML(c.mascotaNombre)}" required></div>
+        <div class="field"><label>Tipo de mascota</label>
+          <select name="mascotaTipo">
+            <option ${c.mascotaTipo==="Perro"?"selected":""}>Perro</option>
+            <option ${c.mascotaTipo==="Gato"?"selected":""}>Gato</option>
+            <option ${c.mascotaTipo==="Otro"?"selected":""}>Otro</option>
+          </select>
+        </div>
+        <div class="field"><label>Raza</label><input name="raza" value="${escapeHTML(c.raza)}"></div>
+        <div class="field"><label>Fecha de cumpleaños</label><input name="fechaCumple" type="date" value="${c.fechaCumple}"></div>
+        <div class="field"><label>¿Cómo conoció Pet Shield?</label>
+          <select name="comoConocio">
+            ${["Redes sociales","Recomendación de un amigo","Publicidad","Visité la tienda","Otro"]
+              .map(opt => `<option ${c.comoConocio===opt?"selected":""}>${opt}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field"><label>Código de referido</label><input name="referido" value="${escapeHTML(c.referido)}"></div>
+        <div class="field"><label>Sellos acumulados (0-10)</label><input name="sellos" type="number" min="0" max="10" value="${c.sellos}"></div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:18px;">
+        <button type="button" class="btn btn-secondary" style="flex:1" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" style="flex:1">Guardar cambios</button>
+      </div>
+    </form>
+  `;
+  document.getElementById("edit-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    c.nombre = fd.get("nombre").trim();
+    c.celular = fd.get("celular").trim();
+    c.correo = fd.get("correo").trim();
+    c.fechaNacimiento = fd.get("fechaNacimiento") || "";
+    c.mascotaNombre = fd.get("mascotaNombre").trim();
+    c.mascotaTipo = fd.get("mascotaTipo");
+    c.raza = fd.get("raza").trim();
+    c.fechaCumple = fd.get("fechaCumple") || "";
+    c.comoConocio = fd.get("comoConocio");
+    c.referido = fd.get("referido").trim();
+    c.sellos = Math.min(CONFIG.maxStamps, Math.max(0, parseInt(fd.get("sellos"), 10) || 0));
+    saveDB(DB);
+    renderAdminTable();
+    closeModal();
+    toast("Cliente actualizado correctamente.");
+  });
+}
+
+
+/* =========================================================
+   CONTROL DE BENEFICIOS
+   Motor que calcula automáticamente, a partir de los clientes
+   y su historial de compras, quién es apto para cada beneficio.
+   ========================================================= */
+
+/* ---------------- Acceso protegido ---------------- */
+const benefitsGateForm = document.getElementById("benefits-gate-form");
+benefitsGateForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const pass = document.getElementById("benefits-gate-password").value;
+  const errorEl = document.getElementById("benefits-gate-error");
+  if(pass === CONFIG.adminPassword){
+    benefitsUnlocked = true;
+    document.getElementById("benefits-gate").classList.add("hidden");
+    document.getElementById("benefits-content").classList.remove("hidden");
+    errorEl.classList.remove("show");
+    benefitsGateForm.reset();
+    renderBenefitRequirements();
+    renderBenefitsDashboard();
+    renderPromoList();
+  }else{
+    errorEl.textContent = "Código incorrecto. Inténtalo nuevamente.";
+    errorEl.classList.add("show");
+  }
+});
+document.getElementById("benefits-lock-btn").addEventListener("click", () => {
+  benefitsUnlocked = false;
+  document.getElementById("benefits-content").classList.add("hidden");
+  document.getElementById("benefits-gate").classList.remove("hidden");
+});
+
+/* ---------------- Utilidades de fecha / estado ---------------- */
+function isoFromDate(d){
+  return d.toISOString().slice(0,10);
+}
+function birthdayWindowStatus(fechaCumpleISO){
+  if(!fechaCumpleISO) return null;
+  const parts = fechaCumpleISO.split("-").map(Number);
+  if(parts.length !== 3) return null;
+  const [, m, d] = parts;
+  const now = new Date();
+  const y = now.getFullYear();
+  const candidates = [y - 1, y, y + 1].map(yr => new Date(yr, m - 1, d));
+  let best = candidates[1], bestAbsDiff = Infinity, bestDiff = 0;
+  candidates.forEach(bd => {
+    const diff = Math.round((now - bd) / 86400000);
+    if(Math.abs(diff) < bestAbsDiff){ bestAbsDiff = Math.abs(diff); best = bd; bestDiff = diff; }
+  });
+  const before = CONFIG.benefits.birthdayWindowDaysBefore;
+  const after = CONFIG.benefits.birthdayWindowDaysAfter;
+  const inWindow = bestDiff >= -before && bestDiff <= after;
+  const deadline = new Date(best.getTime() + after * 86400000);
+  return { bdayDate: best, inWindow, deadline, yearKey: best.getFullYear() };
+}
+function statusEmoji(status){
+  return { apto: "🟢", pendiente: "🟡", no_apto: "🔴", utilizado: "⚪" }[status] || "⚪";
+}
+function statusLabel(status){
+  return { apto: "APTO", pendiente: "PENDIENTE", no_apto: "NO APTO", utilizado: "UTILIZADO" }[status] || status;
+}
+function statusChipHTML(status){
+  return `<span class="status-chip status-${status}">${statusEmoji(status)} ${statusLabel(status)}</span>`;
+}
+function combineStatus(list){
+  if(list.includes("apto")) return "apto";
+  if(list.includes("pendiente")) return "pendiente";
+  if(list.includes("utilizado")) return "utilizado";
+  return "no_apto";
+}
+function findReferrerOf(client){
+  if(!client.referido) return null;
+  const t = client.referido.trim().toLowerCase();
+  if(!t) return null;
+  return DB.clients.find(o => o.code !== client.code &&
+    (o.code.toLowerCase() === t || o.nombre.trim().toLowerCase() === t)) || null;
+}
+
+/* ---------------- Cálculo de beneficios por cliente ---------------- */
+function computeClientBenefits(c){
+  const cfg = getBenefitsConfig();
+
+  // 1. Compra de 6+ unidades (automático, informativo, por última compra)
+  const lastCompra = c.compras[c.compras.length - 1];
+  let volumen;
+  if(!lastCompra){
+    volumen = { status: "no_apto", detail: "Aún no registra compras." };
+  }else if(lastCompra.unidades >= cfg.volumeMinUnits){
+    volumen = { status: "apto", detail: `Su última compra fue de ${lastCompra.unidades} unidades (${formatDate(lastCompra.fecha)}). Aplica descuento por volumen.` };
+  }else{
+    volumen = { status: "no_apto", detail: `Su última compra fue de ${lastCompra.unidades} unidad(es). Se requieren ${cfg.volumeMinUnits}+ para el descuento.` };
+  }
+
+  // 2. Segunda compra
+  let segunda;
+  if(c.beneficiosUsados.segundaCompra){
+    segunda = { status: "utilizado", detail: "Ya utilizó el descuento de segunda compra." };
+  }else if(c.compras.length >= 1){
+    segunda = { status: "apto", detail: `Ya realizó su primera compra. Tiene ${cfg.secondPurchaseDiscount}% de descuento disponible en su próxima compra.`, markable: true };
+  }else{
+    segunda = { status: "no_apto", detail: "Aún no realiza su primera compra." };
+  }
+
+  // 3. Referidos — bono para quien refiere
+  const referredByMe = DB.clients.filter(o => o.code !== c.code && findReferrerOf(o) && findReferrerOf(o).code === c.code);
+  const premiados = c.beneficiosUsados.referidosPremiados || [];
+  const listosParaPremiar = referredByMe.filter(o => o.compras.length >= 1 && !premiados.includes(o.code));
+  let referidoBono;
+  if(listosParaPremiar.length > 0){
+    referidoBono = { status: "apto", detail: `${listosParaPremiar.length} referido(s) ya realizaron su primera compra: +${listosParaPremiar.length} sello(s) por reclamar.`, markable: true };
+  }else if(referredByMe.length > 0){
+    referidoBono = { status: "utilizado", detail: `Sus ${referredByMe.length} referido(s) ya fueron premiados.` };
+  }else{
+    referidoBono = { status: "no_apto", detail: "No ha referido a ningún cliente todavía." };
+  }
+
+  // 3b. Referidos — descuento para el nuevo cliente referido
+  const referrer = findReferrerOf(c);
+  let referidoDescuento;
+  if(!referrer){
+    referidoDescuento = { status: "no_apto", detail: "No fue registrado con un código de referido." };
+  }else if(c.beneficiosUsados.referidoDescuentoUsado){
+    referidoDescuento = { status: "utilizado", detail: `Ya utilizó su ${cfg.referralDiscount}% de bienvenida por haber sido referido por ${referrer.nombre}.` };
+  }else if(c.compras.length === 0){
+    referidoDescuento = { status: "apto", detail: `Fue referido por ${referrer.nombre}. Tiene ${cfg.referralDiscount}% de descuento disponible en su primera compra.`, markable: true };
+  }else{
+    referidoDescuento = { status: "pendiente", detail: `Fue referido por ${referrer.nombre} y ya compró — confirma si se le aplicó el ${cfg.referralDiscount}% y márcalo como utilizado.`, markable: true };
+  }
+
+  // 4. Cumpleaños de la mascota
+  const bday = birthdayWindowStatus(c.fechaCumple);
+  let cumple;
+  if(!bday){
+    cumple = { status: "no_apto", detail: "Sin fecha de cumpleaños de mascota registrada." };
+  }else{
+    const used = c.beneficiosUsados.cumpleMascota && c.beneficiosUsados.cumpleMascota[bday.yearKey];
+    if(used){
+      cumple = { status: "utilizado", detail: `Ya utilizó el ${cfg.birthdayDiscount}% de descuento de cumpleaños este año.`, yearKey: bday.yearKey };
+    }else if(bday.inWindow){
+      cumple = { status: "apto", detail: `${cfg.birthdayDiscount}% de descuento válido hasta el ${formatDate(isoFromDate(bday.deadline))}.`, markable: true, yearKey: bday.yearKey };
+    }else{
+      cumple = { status: "no_apto", detail: `Próximo cumpleaños de ${c.mascotaNombre}: ${formatDate(isoFromDate(bday.bdayDate))}.`, yearKey: bday.yearKey };
+    }
+  }
+
+  // 5. Huella Dorada (estado de cliente frecuente, no se "usa")
+  const numCompras = c.compras.length;
+  const totalGastado = c.compras.reduce((s, p) => s + (p.monto || 0), 0);
+  const huellaApta = numCompras >= cfg.huellaDoradaMinCompras || totalGastado >= cfg.huellaDoradaMinGasto;
+  const huella = {
+    status: huellaApta ? "apto" : "no_apto",
+    detail: `${numCompras} compra(s) registradas · ${formatMoney(totalGastado)} en total.`,
+    numCompras, totalGastado
+  };
+
+  // 6. Sorteo mensual
+  const monthKey = todayISO().slice(0,7);
+  const aptoSorteo = c.compras.length >= cfg.raffleMinCompras || c.sellos >= cfg.raffleMinSellos;
+  const participado = c.beneficiosUsados.sorteoMensual && c.beneficiosUsados.sorteoMensual[monthKey];
+  let sorteo;
+  if(participado){
+    sorteo = { status: "utilizado", detail: "Ya está participando en el sorteo de este mes." };
+  }else if(aptoSorteo){
+    sorteo = { status: "apto", detail: `Cumple los requisitos (${cfg.raffleMinCompras}+ compras o ${cfg.raffleMinSellos}+ sellos) para el sorteo de este mes.`, markable: true };
+  }else{
+    sorteo = { status: "no_apto", detail: `Necesita ${cfg.raffleMinCompras}+ compras o ${cfg.raffleMinSellos}+ sellos.` };
+  }
+
+  return { volumen, segunda, referidoBono, referidoDescuento, cumple, huella, sorteo };
+}
+
+function getPromoStatus(c, promo){
+  const used = c.beneficiosUsados.promociones && c.beneficiosUsados.promociones[promo.id];
+  if(used) return "utilizado";
+  const now = todayISO();
+  const meetsReq = c.sellos >= (promo.minSellos || 0) && c.compras.length >= (promo.minCompras || 0);
+  const active = now >= promo.fechaInicio && now <= promo.fechaFin;
+  if(active && meetsReq) return "apto";
+  if(now < promo.fechaInicio && meetsReq) return "pendiente";
+  return "no_apto";
+}
+
+/* ---------------- Dashboard "Clientes aptos para beneficios" ---------------- */
+/* ---------------- Requisitos de cada beneficio (tarjetas explicativas) ---------------- */
+function renderBenefitRequirements(){
+  const box = document.getElementById("benefit-requirements");
+  if(!box) return;
+  const cfg = getBenefitsConfig();
+  const items = [
+    { name: "📦 Compra de 6+ unidades", req: `Comprar ${cfg.volumeMinUnits} unidades o más en una sola compra.`, reward: "Descuento especial por volumen.", vig: "Se evalúa en cada compra registrada." },
+    { name: "🥈 Segunda compra", req: "Haber realizado la primera compra.", reward: `${cfg.secondPurchaseDiscount}% de descuento.`, vig: "Válido en la siguiente compra que haga." },
+    { name: "🤝 Bono por referir", req: "Que la persona que refirió haga su primera compra.", reward: `+${cfg.referralBonusStamps} sello(s) para quien refirió.`, vig: "Se acredita al confirmarse la compra del referido." },
+    { name: "🎁 Descuento por ser referido", req: "Haber sido registrado con el código/nombre de un cliente existente en 'Código de referido'.", reward: `${cfg.referralDiscount}% de descuento.`, vig: "Válido solo en su primera compra." },
+    { name: "🎂 Cumpleaños de la mascota", req: `Estar entre ${cfg.birthdayWindowDaysBefore} días antes y ${cfg.birthdayWindowDaysAfter} días después del cumpleaños de la mascota.`, reward: `${cfg.birthdayDiscount}% de descuento.`, vig: "Solo durante esa ventana de días, una vez al año." },
+    { name: "🐾 Huella Dorada", req: `${cfg.huellaDoradaMinCompras}+ compras registradas, o ${formatMoney(cfg.huellaDoradaMinGasto)}+ acumulados en compras.`, reward: "Estatus de cliente frecuente.", vig: "Se mantiene mientras cumpla el requisito." },
+    { name: "🎟️ Sorteo mensual", req: `${cfg.raffleMinCompras}+ compras, o ${cfg.raffleMinSellos}+ sellos acumulados.`, reward: "Participación en el sorteo del mes.", vig: "El requisito se vuelve a evaluar cada mes." }
+  ];
+  box.innerHTML = items.map(i => `
+    <div class="req-card">
+      <div class="req-card-name">${i.name}</div>
+      <div class="req-card-row"><span>Requisito</span><strong>${i.req}</strong></div>
+      <div class="req-card-row"><span>Beneficio recibido</span><strong>${i.reward}</strong></div>
+      <div class="req-card-row"><span>Vigencia</span><strong>${i.vig}</strong></div>
+    </div>
+  `).join("");
+}
+
+function benefitLabel(key){
+  const cfg = getBenefitsConfig();
+  return {
+    volumen: `Compra de ${cfg.volumeMinUnits}+ unidades`,
+    segunda: "Segunda compra",
+    referidos: "Programa de referidos",
+    cumple: "Cumpleaños de mascota",
+    huella: "Huella Dorada",
+    sorteo: "Sorteo mensual",
+    promo: "Promoción de temporada"
+  }[key] || key;
+}
+
+let benefitsDashboardGroups = {};
+
+function renderBenefitsDashboard(){
+  const tbody = document.getElementById("benefits-dashboard-tbody");
+  const groups = {
+    volumen: { apto: [], utilizado: [], pendiente: [] },
+    segunda: { apto: [], utilizado: [], pendiente: [] },
+    referidos: { apto: [], utilizado: [], pendiente: [] },
+    cumple: { apto: [], utilizado: [], pendiente: [] },
+    huella: { apto: [], utilizado: [], pendiente: [] },
+    sorteo: { apto: [], utilizado: [], pendiente: [] },
+    promo: { apto: [], utilizado: [], pendiente: [] }
+  };
+  const push = (key, status, code) => {
+    if(groups[key][status]) groups[key][status].push(code);
+  };
+  DB.clients.forEach(c => {
+    const b = computeClientBenefits(c);
+    push("volumen", b.volumen.status, c.code);
+    push("segunda", b.segunda.status, c.code);
+    push("referidos", combineStatus([b.referidoBono.status, b.referidoDescuento.status]), c.code);
+    push("cumple", b.cumple.status, c.code);
+    push("huella", b.huella.status, c.code);
+    push("sorteo", b.sorteo.status, c.code);
+    if(DB.promotions.length){
+      const promoStatuses = DB.promotions.map(p => getPromoStatus(c, p));
+      push("promo", combineStatus(promoStatuses), c.code);
+    }
+  });
+  benefitsDashboardGroups = groups;
+
+  const cell = (key, status) => {
+    const count = groups[key][status].length;
+    if(count === 0) return `<span class="dash-num dash-zero">0</span>`;
+    return `<button type="button" class="dash-num dash-link" onclick="openBenefitClientsList('${key}','${status}')">${count}</button>`;
+  };
+
+  tbody.innerHTML = Object.keys(groups).map(key => `
+    <tr>
+      <td>${benefitLabel(key)}</td>
+      <td>${cell(key, "apto")}</td>
+      <td>${cell(key, "utilizado")}</td>
+      <td>${cell(key, "pendiente")}</td>
+    </tr>
+  `).join("");
+}
+
+/* ---------------- Ver listado de clientes al hacer clic en un número ---------------- */
+function openBenefitClientsList(key, status){
+  const codes = (benefitsDashboardGroups[key] && benefitsDashboardGroups[key][status]) || [];
+  document.querySelector(".modal-box").classList.add("modal-wide");
+  openModal(`${benefitLabel(key)} — ${statusLabel(status)} (${codes.length})`);
+
+  if(codes.length === 0){
+    modalBody.innerHTML = `<p style="font-size:13px;color:var(--ink-soft);">No hay clientes en este estado.</p>`;
+    return;
+  }
+
+  modalBody.innerHTML = `
+    <div class="benefits-quick-list">
+      ${codes.map(code => {
+        const c = findClient(code);
+        if(!c) return "";
+        return `
+          <div class="benefits-quick-item" onclick="openBenefitsFicha('${c.code}')">
+            <div>
+              <span class="bqi-name">${escapeHTML(c.nombre)}</span>
+              <span class="bqi-pet">${escapeHTML(c.mascotaNombre)} · ${escapeHTML(c.code)} · 📞 ${escapeHTML(c.celular)} · ✉️ ${escapeHTML(c.correo)}</span>
+            </div>
+            <span class="code-pill">Ver ficha →</span>
+          </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
+/* ---------------- Buscador de clientes y ficha de beneficios ---------------- */
+const benefitsSearchInput = document.getElementById("benefits-search-input");
+benefitsSearchInput.addEventListener("input", renderBenefitsSearchResults);
+
+function renderBenefitsSearchResults(){
+  const q = benefitsSearchInput.value.trim().toLowerCase();
+  const box = document.getElementById("benefits-search-results");
+  const empty = document.getElementById("benefits-search-empty");
+  if(!q){
+    box.innerHTML = "";
+    empty.classList.remove("hidden");
+    empty.querySelector("p").textContent = "Escribe un código, nombre, celular o correo para buscar un cliente y ver su ficha de beneficios.";
+    return;
+  }
+  const matches = DB.clients.filter(c =>
+    [c.code, c.nombre, c.celular, c.correo].join(" ").toLowerCase().includes(q)
+  );
+  if(matches.length === 0){
+    box.innerHTML = "";
+    empty.classList.remove("hidden");
+    empty.querySelector("p").textContent = "No encontramos ningún cliente con ese dato.";
+    return;
+  }
+  empty.classList.add("hidden");
+  box.innerHTML = matches.map(c => `
+    <div class="benefits-quick-item" onclick="openBenefitsFicha('${c.code}')">
+      <div><span class="bqi-name">${escapeHTML(c.nombre)}</span><span class="bqi-pet">${escapeHTML(c.mascotaNombre)} · ${escapeHTML(c.code)}</span></div>
+      <span class="code-pill">Ver ficha →</span>
+    </div>
+  `).join("");
+}
+
+function openBenefitsFicha(code){
+  const c = findClient(code);
+  if(!c) return;
+  const b = computeClientBenefits(c);
+  const bcfg = getBenefitsConfig();
+  const stats = purchaseStats(c);
+  document.querySelector(".modal-box").classList.add("modal-wide");
+  openModal("Ficha de beneficios");
+
+  const promoRowsHTML = DB.promotions.map(p => {
+    const st = getPromoStatus(c, p);
+    return `
+      <div class="benefit-row b-${st}">
+        <div class="benefit-row-head"><strong>🎉 ${escapeHTML(p.nombre)}</strong>${statusChipHTML(st)}</div>
+        <div class="benefit-detail">${formatDate(p.fechaInicio)} – ${formatDate(p.fechaFin)} · Requiere ${p.minSellos || 0}+ sellos y ${p.minCompras || 0}+ compras. Beneficio: ${escapeHTML(p.beneficio || "—")}</div>
+        ${st === "apto" ? `<button class="btn btn-secondary btn-sm" onclick="markPromoUsed('${c.code}','${p.id}')">Marcar como utilizado</button>` : ""}
+      </div>`;
+  }).join("") || `<p style="font-size:12.5px;color:var(--ink-soft);">Aún no hay promociones de temporada creadas.</p>`;
+
+  modalBody.innerHTML = `
+    <div class="ficha-head">
+      <div>
+        <h4>${escapeHTML(c.nombre)}</h4>
+        <p>Código <span class="gold">${escapeHTML(c.code)}</span> · Mascota: ${escapeHTML(c.mascotaNombre)} · ${c.compras.length} compra(s) · ${c.sellos}/${CONFIG.maxStamps} sellos</p>
+      </div>
+    </div>
+
+    <div class="purchase-stats-row" style="margin-bottom:18px;">
+      <span><strong>${stats.n}</strong> compra(s)</span>
+      <span><strong>${formatMoney(stats.total)}</strong> total comprado</span>
+      <span><strong>${formatMoney(stats.promedio)}</strong> promedio por compra</span>
+      <span>Última compra: <strong>${stats.ultima ? formatDate(stats.ultima.fecha) : "—"}</strong></span>
+    </div>
+
+    <div class="status-legend" style="margin-bottom:16px;">
+      <span class="status-legend-item"><span class="status-chip status-apto">🟢 APTO</span> Puede reclamarlo ya.</span>
+      <span class="status-legend-item"><span class="status-chip status-pendiente">🟡 PENDIENTE</span> Falta confirmarlo.</span>
+      <span class="status-legend-item"><span class="status-chip status-no_apto">🔴 NO APTO</span> Aún no cumple.</span>
+      <span class="status-legend-item"><span class="status-chip status-utilizado">⚪ UTILIZADO</span> Ya se usó.</span>
+    </div>
+
+    <div class="benefit-row b-${b.volumen.status}">
+      <div class="benefit-row-head"><strong>📦 Compra de ${bcfg.volumeMinUnits}+ unidades</strong>${statusChipHTML(b.volumen.status)}</div>
+      <div class="benefit-detail">${b.volumen.detail}</div>
+    </div>
+
+    <div class="benefit-row b-${b.segunda.status}">
+      <div class="benefit-row-head"><strong>🥈 Segunda compra (${bcfg.secondPurchaseDiscount}%)</strong>${statusChipHTML(b.segunda.status)}</div>
+      <div class="benefit-detail">${b.segunda.detail}</div>
+      ${b.segunda.markable ? `<button class="btn btn-secondary btn-sm" onclick="markBenefitUsed('${c.code}','segundaCompra','Segunda compra')">Marcar beneficio como utilizado</button>` : ""}
+    </div>
+
+    <div class="benefit-row b-${b.referidoBono.status}">
+      <div class="benefit-row-head"><strong>🤝 Bono por referir</strong>${statusChipHTML(b.referidoBono.status)}</div>
+      <div class="benefit-detail">${b.referidoBono.detail}</div>
+      ${b.referidoBono.markable ? `<button class="btn btn-secondary btn-sm" onclick="markReferidoBono('${c.code}')">Marcar beneficio como utilizado</button>` : ""}
+    </div>
+
+    <div class="benefit-row b-${b.referidoDescuento.status}">
+      <div class="benefit-row-head"><strong>🎁 Descuento por ser referido (${bcfg.referralDiscount}%)</strong>${statusChipHTML(b.referidoDescuento.status)}</div>
+      <div class="benefit-detail">${b.referidoDescuento.detail}</div>
+      ${b.referidoDescuento.markable ? `<button class="btn btn-secondary btn-sm" onclick="markBenefitUsed('${c.code}','referidoDescuentoUsado','Descuento por referido')">Marcar beneficio como utilizado</button>` : ""}
+    </div>
+
+    <div class="benefit-row b-${b.cumple.status}">
+      <div class="benefit-row-head"><strong>🎂 Cumpleaños de la mascota (${bcfg.birthdayDiscount}%)</strong>${statusChipHTML(b.cumple.status)}</div>
+      <div class="benefit-detail">${escapeHTML(c.mascotaNombre)} · ${formatDate(c.fechaCumple)} — ${b.cumple.detail}</div>
+      ${b.cumple.markable ? `<button class="btn btn-secondary btn-sm" onclick="markCumpleMascota('${c.code}', ${b.cumple.yearKey})">Marcar beneficio como utilizado</button>` : ""}
+    </div>
+
+    <div class="benefit-row b-${b.huella.status}">
+      <div class="benefit-row-head"><strong>🐾 Huella Dorada</strong>${statusChipHTML(b.huella.status)}</div>
+      <div class="benefit-detail">${b.huella.detail} Beneficios disponibles (ejemplo, ajustable): 5% de descuento permanente + acceso anticipado a promociones.</div>
+    </div>
+
+    <div class="benefit-row b-${b.sorteo.status}">
+      <div class="benefit-row-head"><strong>🎟️ Sorteo mensual</strong>${statusChipHTML(b.sorteo.status)}</div>
+      <div class="benefit-detail">${b.sorteo.detail}</div>
+      ${b.sorteo.markable ? `<button class="btn btn-secondary btn-sm" onclick="markSorteoMensual('${c.code}')">Marcar participación</button>` : ""}
+    </div>
+
+    <h4 style="margin:18px 0 10px 0; color:var(--purple-900); font-size:15px;">🎉 Promociones de temporada</h4>
+    ${promoRowsHTML}
+
+    <h4 style="margin:18px 0 10px 0; color:var(--purple-900); font-size:15px;">🧾 Historial de compras</h4>
+    ${purchaseHistoryHTML(c)}
+
+    <h4 style="margin:18px 0 10px 0; color:var(--purple-900); font-size:15px;">📜 Beneficios utilizados</h4>
+    ${usageLogHTML(c)}
+  `;
+}
+function usageLogHTML(c){
+  const entries = DB.usageLog.filter(u => u.clienteCode === c.code).slice().reverse();
+  if(entries.length === 0){
+    return `<p style="font-size:12.5px; color:var(--ink-soft);">Este cliente aún no ha utilizado ningún beneficio.</p>`;
+  }
+  return `
+    <div class="table-wrap" style="max-height:220px;">
+      <table>
+        <thead><tr><th>Beneficio</th><th>Fecha</th><th>Código</th><th>Asesor</th></tr></thead>
+        <tbody>
+          ${entries.map(u => `
+            <tr>
+              <td>${escapeHTML(u.beneficio)}</td>
+              <td>${formatDate(u.fecha)}</td>
+              <td>${escapeHTML(u.codigoBeneficio || "—")}</td>
+              <td>${escapeHTML(u.asesor)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ---------------- Registro de utilización de beneficios ---------------- */
+function logUsage(client, beneficioLabel, codigoBeneficio){
+  const advisorInput = document.getElementById("benefits-advisor");
+  const advisor = (advisorInput.value || "").trim() || "No especificado";
+  DB.usageLog.push({
+    id: `U-${Date.now()}`,
+    clienteCode: client.code,
+    clienteNombre: client.nombre,
+    beneficio: beneficioLabel,
+    codigoBeneficio: codigoBeneficio || "",
+    fecha: todayISO(),
+    asesor: advisor
+  });
+}
+
+function markBenefitUsed(code, flagKey, label){
+  const c = findClient(code);
+  if(!c) return;
+  c.beneficiosUsados[flagKey] = true;
+  logUsage(c, label);
+  saveDB(DB);
+  toast(`Beneficio "${label}" marcado como utilizado para ${c.nombre}.`, "success");
+  openBenefitsFicha(code);
+  renderBenefitsDashboard();
+}
+
+function markReferidoBono(code){
+  const c = findClient(code);
+  if(!c) return;
+  const referredByMe = DB.clients.filter(o => o.code !== c.code && findReferrerOf(o) && findReferrerOf(o).code === c.code);
+  const premiados = c.beneficiosUsados.referidosPremiados || [];
+  const listos = referredByMe.filter(o => o.compras.length >= 1 && !premiados.includes(o.code));
+  if(listos.length === 0){
+    toast("No hay referidos pendientes por premiar.", "error");
+    return;
+  }
+  c.beneficiosUsados.referidosPremiados = premiados.concat(listos.map(o => o.code));
+  c.sellos = Math.min(CONFIG.maxStamps, c.sellos + listos.length);
+  logUsage(c, `Bono por referir (${listos.length} referido(s))`);
+  saveDB(DB);
+  toast(`+${listos.length} sello(s) de bono agregado(s) a ${c.nombre} por sus referidos.`, "success");
+  openBenefitsFicha(code);
+  renderBenefitsDashboard();
+  if(adminUnlocked) renderAdminTable();
+}
+
+function markCumpleMascota(code, yearKey){
+  const c = findClient(code);
+  if(!c) return;
+  if(!c.beneficiosUsados.cumpleMascota) c.beneficiosUsados.cumpleMascota = {};
+  c.beneficiosUsados.cumpleMascota[yearKey] = true;
+  logUsage(c, "Cumpleaños de mascota");
+  saveDB(DB);
+  toast(`Beneficio de cumpleaños marcado como utilizado para ${c.nombre}.`, "success");
+  openBenefitsFicha(code);
+  renderBenefitsDashboard();
+}
+
+function markSorteoMensual(code){
+  const c = findClient(code);
+  if(!c) return;
+  const monthKey = todayISO().slice(0,7);
+  if(!c.beneficiosUsados.sorteoMensual) c.beneficiosUsados.sorteoMensual = {};
+  c.beneficiosUsados.sorteoMensual[monthKey] = true;
+  logUsage(c, `Participación sorteo mensual (${monthKey})`);
+  saveDB(DB);
+  toast(`${c.nombre} quedó registrado en el sorteo de este mes.`, "success");
+  openBenefitsFicha(code);
+  renderBenefitsDashboard();
+}
+
+function markPromoUsed(code, promoId){
+  const c = findClient(code);
+  const promo = DB.promotions.find(p => p.id === promoId);
+  if(!c || !promo) return;
+  if(!c.beneficiosUsados.promociones) c.beneficiosUsados.promociones = {};
+  c.beneficiosUsados.promociones[promoId] = true;
+  logUsage(c, `Promoción: ${promo.nombre}`, promoId);
+  saveDB(DB);
+  toast(`Promoción "${promo.nombre}" marcada como utilizada para ${c.nombre}.`, "success");
+  openBenefitsFicha(code);
+  renderBenefitsDashboard();
+}
+
+/* ---------------- Promociones de temporada (CRUD) ---------------- */
+const promoNombreSelect = document.getElementById("promo-nombre-select");
+const promoCustomWrap = document.getElementById("promo-custom-wrap");
+promoNombreSelect.addEventListener("change", () => {
+  promoCustomWrap.style.display = promoNombreSelect.value === "__custom" ? "block" : "none";
+});
+
+document.getElementById("promo-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const nombre = promoNombreSelect.value === "__custom"
+    ? document.getElementById("promo-nombre-custom").value.trim()
+    : promoNombreSelect.value;
+  const fechaInicio = document.getElementById("promo-fecha-inicio").value;
+  const fechaFin = document.getElementById("promo-fecha-fin").value;
+  if(!nombre || !fechaInicio || !fechaFin){
+    toast("Completa nombre, fecha de inicio y fecha de fin de la promoción.", "error");
+    return;
+  }
+  if(fechaFin < fechaInicio){
+    toast("La fecha de fin no puede ser anterior a la fecha de inicio.", "error");
+    return;
+  }
+  DB.promotions.push({
+    id: `PROMO-${Date.now()}`,
+    nombre,
+    fechaInicio,
+    fechaFin,
+    minSellos: parseInt(document.getElementById("promo-min-sellos").value, 10) || 0,
+    minCompras: parseInt(document.getElementById("promo-min-compras").value, 10) || 0,
+    beneficio: document.getElementById("promo-beneficio").value.trim()
+  });
+  saveDB(DB);
+  e.target.reset();
+  promoCustomWrap.style.display = "none";
+  renderPromoList();
+  renderBenefitsDashboard();
+  toast(`Promoción "${nombre}" creada correctamente.`, "success");
+});
+
+function renderPromoList(){
+  const box = document.getElementById("promo-list");
+  if(DB.promotions.length === 0){
+    box.innerHTML = `<p style="font-size:12.5px;color:var(--ink-soft);">Aún no has creado ninguna promoción.</p>`;
+    return;
+  }
+  box.innerHTML = DB.promotions.map(p => `
+    <div class="promo-card">
+      <div>
+        <div class="promo-name">🎉 ${escapeHTML(p.nombre)}</div>
+        <div class="promo-dates">${formatDate(p.fechaInicio)} – ${formatDate(p.fechaFin)}</div>
+        <div class="promo-req">Requiere ${p.minSellos || 0}+ sellos y ${p.minCompras || 0}+ compras · ${escapeHTML(p.beneficio || "—")}</div>
+      </div>
+      <button class="icon-btn danger" title="Eliminar promoción" onclick="deletePromo('${p.id}')">🗑️</button>
+    </div>
+  `).join("");
+}
+function deletePromo(id){
+  const promo = DB.promotions.find(p => p.id === id);
+  if(!promo) return;
+  if(!confirm(`¿Eliminar la promoción "${promo.nombre}"?`)) return;
+  DB.promotions = DB.promotions.filter(p => p.id !== id);
+  saveDB(DB);
+  renderPromoList();
+  renderBenefitsDashboard();
+  toast("Promoción eliminada.", "success");
+}
+
+
+/* ---------------- PÁGINA DE INICIO (pública) ---------------- */
+function renderHomeDynamicValues(){
+  const cfg = getBenefitsConfig();
+  const map = {
+    "home-vol-units": cfg.volumeMinUnits,
+    "home-vol-units-2": cfg.volumeMinUnits,
+    "home-vol-units-minus1": Math.max(0, cfg.volumeMinUnits - 1),
+    "home-second-pct": cfg.secondPurchaseDiscount,
+    "home-ref-pct": cfg.referralDiscount,
+    "home-ref-stamps": cfg.referralBonusStamps,
+    "home-bday-pct": cfg.birthdayDiscount,
+    "home-bday-before": cfg.birthdayWindowDaysBefore,
+    "home-bday-after": cfg.birthdayWindowDaysAfter,
+    "home-huella-compras": cfg.huellaDoradaMinCompras,
+    "home-huella-gasto": formatMoney(cfg.huellaDoradaMinGasto),
+    "home-raffle-compras": cfg.raffleMinCompras,
+    "home-raffle-sellos": cfg.raffleMinSellos,
+    "home-max-stamps": CONFIG.maxStamps
+  };
+  Object.keys(map).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = map[id];
+  });
+  renderHomePromos();
+}
+function renderHomePromos(){
+  const box = document.getElementById("home-promos-list");
+  if(!box) return;
+  const active = DB.promotions.filter(p => todayISO() >= p.fechaInicio && todayISO() <= p.fechaFin);
+  if(active.length === 0){
+    box.innerHTML = `<p style="font-size:13px; color:var(--ink-soft);">No hay promociones activas en este momento — vuelve pronto 🐾</p>`;
+    return;
+  }
+  box.innerHTML = active.map(p => `
+    <div class="promo-card">
+      <div>
+        <div class="promo-name">🎉 ${escapeHTML(p.nombre)}</div>
+        <div class="promo-dates">Vigente hasta ${formatDate(p.fechaFin)}</div>
+        <div class="promo-req">${escapeHTML(p.beneficio || "Consulta las condiciones en tienda.")}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* ---------------- CONSULTA TUS BENEFICIOS (pública) ---------------- */
+const publicBenefitsForm = document.getElementById("public-benefits-form");
+if(publicBenefitsForm){
+  publicBenefitsForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const q = document.getElementById("public-benefits-input").value.trim().toLowerCase();
+    const resultBox = document.getElementById("public-benefits-result");
+    const emptyBox = document.getElementById("public-benefits-empty");
+    if(!q){
+      toast("Escribe tu código, nombre o celular.", "error");
+      return;
+    }
+    const client = DB.clients.find(c =>
+      c.code.toLowerCase() === q ||
+      normalizePhone(c.celular) === normalizePhone(q) ||
+      c.nombre.toLowerCase().includes(q)
+    );
+    if(!client){
+      resultBox.classList.add("hidden");
+      emptyBox.classList.remove("hidden");
+      return;
+    }
+    emptyBox.classList.add("hidden");
+    resultBox.classList.remove("hidden");
+    renderPublicBenefitsResult(client);
+  });
+}
+function renderPublicBenefitsResult(c){
+  const b = computeClientBenefits(c);
+  const bcfg = getBenefitsConfig();
+  const stats = purchaseStats(c);
+  const box = document.getElementById("public-benefits-result");
+  const rows = [
+    { icon: "📦", label: `Compra de ${bcfg.volumeMinUnits}+ unidades`, s: b.volumen.status },
+    { icon: "🥈", label: "Segunda compra", s: b.segunda.status },
+    { icon: "🤝", label: "Bono por referir", s: b.referidoBono.status },
+    { icon: "🎁", label: "Descuento por ser referido", s: b.referidoDescuento.status },
+    { icon: "🎂", label: "Cumpleaños de la mascota", s: b.cumple.status },
+    { icon: "🐾", label: "Huella Dorada", s: b.huella.status },
+    { icon: "🎟️", label: "Sorteo mensual", s: b.sorteo.status }
+  ];
+  box.innerHTML = `
+    <div class="ficha-head" style="margin-bottom:18px;">
+      <div>
+        <h4>${escapeHTML(c.nombre)}</h4>
+        <p>Mascota: ${escapeHTML(c.mascotaNombre)} · Código <span class="gold">${escapeHTML(c.code)}</span> · ${c.sellos}/${CONFIG.maxStamps} sellos · ${stats.n} compra(s) · ${formatMoney(stats.total)} comprado</p>
+      </div>
+    </div>
+    <h4 style="margin-bottom:10px; color:var(--purple-900);">Beneficios disponibles</h4>
+    <div class="public-benefit-grid">
+      ${rows.map(r => `
+        <div class="public-benefit-item">
+          <span>${r.icon} ${r.label}</span>
+          ${statusChipHTML(r.s)}
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+/* ---------------- ACCESO PROTEGIDO: DASHBOARD ---------------- */
+let dashboardUnlocked = false;
+const dashboardGateForm = document.getElementById("dashboard-gate-form");
+if(dashboardGateForm){
+  dashboardGateForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const pass = document.getElementById("dashboard-gate-password").value;
+    const errorEl = document.getElementById("dashboard-gate-error");
+    if(pass === CONFIG.adminPassword){
+      dashboardUnlocked = true;
+      document.getElementById("dashboard-gate").classList.add("hidden");
+      document.getElementById("dashboard-content").classList.remove("hidden");
+      errorEl.classList.remove("show");
+      dashboardGateForm.reset();
+      renderDashboard();
+    }else{
+      errorEl.textContent = "Código incorrecto. Inténtalo nuevamente.";
+      errorEl.classList.add("show");
+    }
+  });
+  document.getElementById("dashboard-lock-btn").addEventListener("click", () => {
+    dashboardUnlocked = false;
+    document.getElementById("dashboard-content").classList.add("hidden");
+    document.getElementById("dashboard-gate").classList.remove("hidden");
+  });
+}
+
+function renderDashboard(){
+  const clients = DB.clients;
+  const totalClientes = clients.length;
+  const clientesActivos = clients.filter(c => c.compras.length > 0).length;
+  const comprasRealizadas = clients.reduce((s, c) => s + c.compras.length, 0);
+  const ventasAcumuladas = clients.reduce((s, c) => s + c.compras.reduce((s2, p) => s2 + (p.valorTotal || 0), 0), 0);
+  const clientesFrecuentes = clients.filter(c => computeClientBenefits(c).huella.status === "apto").length;
+  const beneficiosUtilizados = DB.usageLog.length;
+  const clientesCompletos = clients.filter(c => c.sellos >= CONFIG.maxStamps).length;
+  const referidos = clients.filter(c => findReferrerOf(c)).length;
+
+  const kpis = [
+    { icon: "👥", label: "Clientes registrados", value: totalClientes },
+    { icon: "🛍️", label: "Clientes activos", value: clientesActivos },
+    { icon: "🧾", label: "Compras realizadas", value: comprasRealizadas },
+    { icon: "💰", label: "Ventas acumuladas", value: formatMoney(ventasAcumuladas) },
+    { icon: "🐾", label: "Clientes frecuentes", value: clientesFrecuentes },
+    { icon: "🏅", label: "Beneficios utilizados", value: beneficiosUtilizados },
+    { icon: "🏆", label: "Clientes con 10 sellos", value: clientesCompletos },
+    { icon: "🤝", label: "Referidos", value: referidos }
+  ];
+  document.getElementById("dashboard-kpis").innerHTML = kpis.map(k => `
+    <div class="stat-card">
+      <div class="stat-icon">${k.icon}</div>
+      <div><div class="stat-num">${k.value}</div><div class="stat-label">${k.label}</div></div>
+    </div>
+  `).join("");
+
+  // ---- Indicadores de gestión ----
+  const compradores = clients.filter(c => c.compras.length >= 1);
+  const recompradores = clients.filter(c => c.compras.length >= 2);
+  const tasaRecompra = compradores.length ? Math.round((recompradores.length / compradores.length) * 100) : 0;
+  const frecuenciaPromedio = compradores.length ? (comprasRealizadas / compradores.length).toFixed(1) : "0.0";
+  const ticketPromedio = comprasRealizadas ? Math.round(ventasAcumuladas / comprasRealizadas) : 0;
+
+  // Beneficios disponibles = aptos + pendientes + utilizados detectados en el dashboard de beneficios
+  let aptosPend = 0;
+  clients.forEach(c => {
+    const b = computeClientBenefits(c);
+    [b.volumen, b.segunda, b.referidoBono, b.referidoDescuento, b.cumple, b.sorteo].forEach(x => {
+      if(x.status === "apto" || x.status === "pendiente") aptosPend++;
+    });
+  });
+  const beneficiosDisponibles = aptosPend + beneficiosUtilizados;
+  const tasaUtilizacion = beneficiosDisponibles ? Math.round((beneficiosUtilizados / beneficiosDisponibles) * 100) : 0;
+  const tasaReferidos = totalClientes ? Math.round((referidos / totalClientes) * 100) : 0;
+
+  const indicadores = [
+    { label: "Tasa de recompra", value: `${tasaRecompra}%`, pct: tasaRecompra },
+    { label: "Frecuencia promedio de compra", value: `${frecuenciaPromedio} compras/cliente`, pct: null },
+    { label: "Ticket promedio", value: formatMoney(ticketPromedio), pct: null },
+    { label: "Tasa de utilización de beneficios", value: `${tasaUtilizacion}%`, pct: tasaUtilizacion },
+    { label: "Tasa de referidos", value: `${tasaReferidos}%`, pct: tasaReferidos },
+    { label: "Clientes frecuentes (Huella Dorada)", value: `${clientesFrecuentes} cliente(s)`, pct: null },
+    { label: "Satisfacción promedio", value: "Sin datos registrados aún", pct: null }
+  ];
+  document.getElementById("dashboard-indicadores").innerHTML = indicadores.map(i => `
+    <div class="kpi-indicator">
+      <div class="kpi-indicator-head"><span>${i.label}</span><strong>${i.value}</strong></div>
+      ${i.pct !== null ? `<div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, i.pct)}%"></div></div>` : ""}
+    </div>
+  `).join("");
+
+  // ---- Gráficos simples (barras CSS) ----
+  const estadoData = [
+    { label: "Activos (con compras)", value: clientesActivos },
+    { label: "Sin compras", value: totalClientes - clientesActivos },
+    { label: "Frecuentes (Huella Dorada)", value: clientesFrecuentes }
+  ];
+  renderBarChart("chart-clientes-estado", estadoData);
+
+  const benefCount = { "Segunda compra": 0, "Referidos": 0, "Cumpleaños": 0, "Volumen": 0, "Huella Dorada": 0, "Sorteos": 0, "Promociones": 0 };
+  DB.usageLog.forEach(u => {
+    if(u.beneficio.includes("Segunda")) benefCount["Segunda compra"]++;
+    else if(u.beneficio.includes("referi") || u.beneficio.includes("Referi")) benefCount["Referidos"]++;
+    else if(u.beneficio.includes("umplea")) benefCount["Cumpleaños"]++;
+    else if(u.beneficio.includes("olumen")) benefCount["Volumen"]++;
+    else if(u.beneficio.includes("orada")) benefCount["Huella Dorada"]++;
+    else if(u.beneficio.includes("orteo")) benefCount["Sorteos"]++;
+    else if(u.beneficio.includes("romoci")) benefCount["Promociones"]++;
+  });
+  renderBarChart("chart-beneficios-usados", Object.keys(benefCount).map(k => ({ label: k, value: benefCount[k] })));
+}
+
+function renderBarChart(containerId, data){
+  const box = document.getElementById(containerId);
+  if(!box) return;
+  const max = Math.max(1, ...data.map(d => d.value));
+  box.innerHTML = data.map(d => `
+    <div class="bar-chart-row">
+      <span class="bar-chart-label">${escapeHTML(d.label)}</span>
+      <div class="bar-chart-track"><div class="bar-chart-fill" style="width:${(d.value / max) * 100}%"></div></div>
+      <span class="bar-chart-value">${d.value}</span>
+    </div>
+  `).join("");
+}
+
+/* ---------------- ACCESO PROTEGIDO: CONFIGURACIÓN ---------------- */
+let configUnlocked = false;
+const configGateForm = document.getElementById("config-gate-form");
+if(configGateForm){
+  configGateForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const pass = document.getElementById("config-gate-password").value;
+    const errorEl = document.getElementById("config-gate-error");
+    if(pass === CONFIG.adminPassword){
+      configUnlocked = true;
+      document.getElementById("config-gate").classList.add("hidden");
+      document.getElementById("config-content").classList.remove("hidden");
+      errorEl.classList.remove("show");
+      configGateForm.reset();
+      fillConfigForm();
+    }else{
+      errorEl.textContent = "Código incorrecto. Inténtalo nuevamente.";
+      errorEl.classList.add("show");
+    }
+  });
+  document.getElementById("config-lock-btn").addEventListener("click", () => {
+    configUnlocked = false;
+    document.getElementById("config-content").classList.add("hidden");
+    document.getElementById("config-gate").classList.remove("hidden");
+  });
+}
+const CONFIG_FIELDS = [
+  ["volumeMinUnits", "cfg-volume-units"],
+  ["secondPurchaseDiscount", "cfg-second-pct"],
+  ["referralDiscount", "cfg-ref-pct"],
+  ["referralBonusStamps", "cfg-ref-stamps"],
+  ["birthdayDiscount", "cfg-bday-pct"],
+  ["birthdayWindowDaysBefore", "cfg-bday-before"],
+  ["birthdayWindowDaysAfter", "cfg-bday-after"],
+  ["huellaDoradaMinCompras", "cfg-huella-compras"],
+  ["huellaDoradaMinGasto", "cfg-huella-gasto"],
+  ["raffleMinCompras", "cfg-raffle-compras"],
+  ["raffleMinSellos", "cfg-raffle-sellos"]
+];
+function fillConfigForm(){
+  const cfg = getBenefitsConfig();
+  CONFIG_FIELDS.forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if(el) el.value = cfg[key];
+  });
+}
+const configForm = document.getElementById("config-form");
+if(configForm){
+  configForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const updated = {};
+    CONFIG_FIELDS.forEach(([key, id]) => {
+      const el = document.getElementById(id);
+      updated[key] = Number(el.value);
+    });
+    DB.settings.benefits = updated;
+    saveDB(DB);
+    renderBenefitRequirements();
+    renderHomeDynamicValues();
+    if(benefitsUnlocked) renderBenefitsDashboard();
+    toast("✓ Configuración guardada. Los nuevos requisitos ya están activos.", "success");
+  });
+  document.getElementById("config-reset-btn").addEventListener("click", () => {
+    if(!confirm("¿Restablecer todos los valores a los que trae el sistema por defecto?")) return;
+    DB.settings.benefits = {};
+    saveDB(DB);
+    fillConfigForm();
+    renderBenefitRequirements();
+    renderHomeDynamicValues();
+    if(benefitsUnlocked) renderBenefitsDashboard();
+    toast("Valores restablecidos.", "success");
+  });
+}
+
+/* ---------------- MENSAJERÍA ---------------- */
+let messagingUnlocked = false;
+const messagingGateForm = document.getElementById("messaging-gate-form");
+if(messagingGateForm){
+  messagingGateForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const pass = document.getElementById("messaging-gate-password").value;
+    const errorEl = document.getElementById("messaging-gate-error");
+    if(pass === CONFIG.adminPassword){
+      messagingUnlocked = true;
+      document.getElementById("messaging-gate").classList.add("hidden");
+      document.getElementById("messaging-content").classList.remove("hidden");
+      errorEl.classList.remove("show");
+      messagingGateForm.reset();
+    }else{
+      errorEl.textContent = "Código incorrecto. Inténtalo nuevamente.";
+      errorEl.classList.add("show");
+    }
+  });
+  document.getElementById("messaging-lock-btn").addEventListener("click", () => {
+    messagingUnlocked = false;
+    document.getElementById("messaging-content").classList.add("hidden");
+    document.getElementById("messaging-gate").classList.remove("hidden");
+  });
+}
+
+let msgResults = [];       // últimos clientes encontrados por el filtro
+let msgSelectedCodes = new Set(); // códigos actualmente marcados
+
+function msgClientMatchesBenefit(c, benefitKey){
+  if(!benefitKey) return true;
+  const b = computeClientBenefits(c);
+  const item = b[benefitKey];
+  return !!item && item.status === "apto";
+}
+
+function msgSearch(){
+  const sMin = Math.max(0, parseInt(document.getElementById("msg-filter-sellos-min").value, 10) || 0);
+  const sMax = Math.min(CONFIG.maxStamps, parseInt(document.getElementById("msg-filter-sellos-max").value, 10) ?? CONFIG.maxStamps);
+  const tipo = document.getElementById("msg-filter-tipo").value;
+  const compras = document.getElementById("msg-filter-compras").value; // "", "con", "sin"
+  const beneficio = document.getElementById("msg-filter-beneficio").value;
+
+  msgResults = DB.clients.filter(c => {
+    if(c.sellos < sMin || c.sellos > sMax) return false;
+    if(tipo && c.mascotaTipo !== tipo) return false;
+    if(compras === "con" && c.compras.length === 0) return false;
+    if(compras === "sin" && c.compras.length > 0) return false;
+    if(!msgClientMatchesBenefit(c, beneficio)) return false;
+    return true;
+  });
+  // Por defecto, todos los encontrados quedan marcados.
+  msgSelectedCodes = new Set(msgResults.map(c => c.code));
+  renderMsgClientsList();
+  renderMsgSendLinks();
+}
+
+function renderMsgClientsList(){
+  const box = document.getElementById("msg-clients-list");
+  const countEl = document.getElementById("msg-found-count");
+  countEl.textContent = msgResults.length;
+  if(msgResults.length === 0){
+    box.innerHTML = `<div class="empty-state"><span class="emoji">🐾</span><p>Ningún cliente cumple con esos filtros todavía.</p></div>`;
+    return;
+  }
+  box.innerHTML = msgResults.map(c => `
+    <label class="msg-client-row">
+      <input type="checkbox" data-code="${escapeHTML(c.code)}" ${msgSelectedCodes.has(c.code) ? "checked" : ""}>
+      <div>
+        <div class="mcr-name">${escapeHTML(c.nombre)}</div>
+        <div class="mcr-meta">${escapeHTML(c.mascotaNombre)} · ${escapeHTML(c.code)} · ${c.sellos}/${CONFIG.maxStamps} sellos ${c.celular ? "· 📞 " + escapeHTML(c.celular) : ""}</div>
+      </div>
+    </label>
+  `).join("");
+  box.querySelectorAll("input[type=checkbox]").forEach(chk => {
+    chk.addEventListener("change", () => {
+      const code = chk.dataset.code;
+      if(chk.checked) msgSelectedCodes.add(code); else msgSelectedCodes.delete(code);
+      renderMsgSendLinks();
+    });
+  });
+}
+
+function msgPersonalize(template, c){
+  return String(template || "")
+    .replaceAll("{nombre}", c.nombre || "")
+    .replaceAll("{mascota}", c.mascotaNombre || "");
+}
+
+function renderMsgSendLinks(){
+  const box = document.getElementById("msg-send-links");
+  const template = document.getElementById("msg-text").value.trim();
+  const selected = msgResults.filter(c => msgSelectedCodes.has(c.code));
+  if(!template){
+    box.innerHTML = "";
+    return;
+  }
+  if(selected.length === 0){
+    box.innerHTML = `<div class="empty-state"><span class="emoji">🐾</span><p>Selecciona al menos un cliente en el paso 2.</p></div>`;
+    return;
+  }
+  box.innerHTML = selected.map(c => {
+    const msg = msgPersonalize(template, c);
+    const phone = normalizePhone(c.celular);
+    const waLink = phone ? `<a class="msg-wa" href="https://wa.me/57${phone}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : `<span class="disabled-link">Sin celular</span>`;
+    const mailLink = c.correo ? `<a class="msg-mail" href="mailto:${encodeURIComponent(c.correo)}?subject=${encodeURIComponent("Club Pet Shield")}&body=${encodeURIComponent(msg)}">✉️ Correo</a>` : `<span class="disabled-link">Sin correo</span>`;
+    return `
+      <div class="msg-send-row">
+        <div><div class="mcr-name">${escapeHTML(c.nombre)}</div><div class="mcr-meta">${escapeHTML(c.mascotaNombre)}</div></div>
+        <div class="msg-send-row-actions">${waLink}${mailLink}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+document.getElementById("msg-search-btn").addEventListener("click", msgSearch);
+document.getElementById("msg-select-all").addEventListener("click", () => {
+  msgSelectedCodes = new Set(msgResults.map(c => c.code));
+  renderMsgClientsList();
+  renderMsgSendLinks();
+});
+document.getElementById("msg-select-none").addEventListener("click", () => {
+  msgSelectedCodes = new Set();
+  renderMsgClientsList();
+  renderMsgSendLinks();
+});
+document.getElementById("msg-text").addEventListener("input", renderMsgSendLinks);
+
+function msgCopyToClipboard(text, emptyMsg, successMsg){
+  if(!text){
+    toast(emptyMsg, "error");
+    return;
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    toast(successMsg, "success");
+  }).catch(() => {
+    toast("⚠️ No se pudo copiar. Copia manualmente el texto.", "error");
+  });
+}
+document.getElementById("msg-copy-phones").addEventListener("click", () => {
+  const selected = msgResults.filter(c => msgSelectedCodes.has(c.code) && c.celular);
+  const text = selected.map(c => c.celular).join(", ");
+  msgCopyToClipboard(text, "No hay celulares para copiar en la selección actual.", `✓ ${selected.length} celular(es) copiado(s).`);
+});
+document.getElementById("msg-copy-emails").addEventListener("click", () => {
+  const selected = msgResults.filter(c => msgSelectedCodes.has(c.code) && c.correo);
+  const text = selected.map(c => c.correo).join(", ");
+  msgCopyToClipboard(text, "No hay correos para copiar en la selección actual.", `✓ ${selected.length} correo(s) copiado(s).`);
+});
+
+/* ---------------- CRM (sección de gerencia) ---------------- */
+let crmUnlocked = false;
+const crmGateForm = document.getElementById("crm-gate-form");
+if(crmGateForm){
+  crmGateForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const pass = document.getElementById("crm-gate-password").value;
+    const errorEl = document.getElementById("crm-gate-error");
+    if(pass === CONFIG.adminPassword){
+      crmUnlocked = true;
+      document.getElementById("crm-gate").classList.add("hidden");
+      document.getElementById("crm-content").classList.remove("hidden");
+      errorEl.classList.remove("show");
+      crmGateForm.reset();
+    }else{
+      errorEl.textContent = "Código incorrecto. Inténtalo nuevamente.";
+      errorEl.classList.add("show");
+    }
+  });
+  document.getElementById("crm-lock-btn").addEventListener("click", () => {
+    crmUnlocked = false;
+    document.getElementById("crm-content").classList.add("hidden");
+    document.getElementById("crm-gate").classList.remove("hidden");
+  });
+}
+
+function excelDateToISO(v){
+  if(!v) return "";
+  if(v instanceof Date && !isNaN(v)) return v.toISOString().slice(0,10);
+  const s = String(v).trim();
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return `${m[1]}-${m[2]}-${m[3]}`;
+  return "";
+}
+
+/* ---------------- IMPORTAR CLIENTES DESDE EXCEL DE COMPRAS ----------------
+   Lee un Excel con la misma estructura que usa el CRM (hoja "Base de datos
+   Persona Natural": una fila = una compra) y crea UN cliente del club por
+   cada persona, agrupando todas sus compras y calculando sus sellos
+   automáticamente (1 sello por compra, hasta el máximo de la tarjeta).
+   Clientes que ya existan en el club (mismo correo o celular) se omiten,
+   para no duplicar registros creados manualmente. */
+function importClientsFromRows(rows){
+  let creados = 0, duplicados = 0, comprasCount = 0;
+  const groups = new Map();
+  rows.forEach(r => {
+    const idKey = String(r["Identificación"] || r["Teléfono"] || r["Correo Electrónico"] || r["Nombre"] || "").trim();
+    if(!idKey) return;
+    if(!groups.has(idKey)) groups.set(idKey, []);
+    groups.get(idKey).push(r);
+  });
+
+  groups.forEach(purchaseRows => {
+    purchaseRows.sort((a, b) => String(a["Fecha de compra"]).localeCompare(String(b["Fecha de compra"])));
+    const first = purchaseRows[0];
+    const last = purchaseRows[purchaseRows.length - 1];
+
+    const celular = normalizePhone(last["Teléfono"] || "");
+    const correo = String(last["Correo Electrónico"] || "").trim().toLowerCase();
+
+    const existing = DB.clients.find(c =>
+      (correo && c.correo.trim().toLowerCase() === correo) ||
+      (celular && normalizePhone(c.celular) === celular)
+    );
+    if(existing){
+      duplicados++;
+      return;
+    }
+
+    const compras = purchaseRows.map(r => {
+      const cantidad = Number(r["Cantidad"]) || 1;
+      const valorTotal = Number(r["Valor total de la compra"]) || 0;
+      return normalizeCompra({
+        id: `C-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+        fecha: excelDateToISO(r["Fecha de compra"]) || todayISO(),
+        producto: String(r["Producto"] || "Producto Pet Shield").trim(),
+        talla: String(r["Talla"] || "").trim(),
+        cantidad,
+        precioUnitario: Math.round(valorTotal / cantidad),
+        descuento: 0,
+        valorTotal,
+        metodoPago: String(r["Metodo de pago"] || "No especificado").trim(),
+        canal: String(r["Canal de compra"] || "No especificado").trim(),
+        asesor: String(r["Nombre del asesor(a)"] || "").trim(),
+        beneficioUtilizado: "",
+        codigoPromocion: ""
+      });
+    });
+    comprasCount += compras.length;
+
+    const client = {
+      code: generateCode(DB),
+      nombre: String(last["Nombre"] || "").trim(),
+      celular: String(last["Teléfono"] || "").trim(),
+      correo: String(last["Correo Electrónico"] || "").trim(),
+      fechaNacimiento: excelDateToISO(last["Fecha de cumpleaños"]) || "",
+      mascotaNombre: String(last["Nombre de la mascota"] || "").trim(),
+      mascotaTipo: "Perro",
+      raza: String(last["Raza"] || "").trim(),
+      fechaCumple: excelDateToISO(last["Cumpleaños de la mascota"]) || "",
+      comoConocio: String(last["¿Cómo conoció Pet Shield?"] || "").trim(),
+      referido: String(last["Código de referido"] || "").trim(),
+      fechaRegistro: excelDateToISO(first["Fecha de compra"]) || todayISO(),
+      sellos: Math.min(CONFIG.maxStamps, compras.length),
+      compras,
+      beneficiosUsados: {}
+    };
+    DB.clients.push(client);
+    creados++;
+  });
+
+  return { creados, duplicados, compras: comprasCount };
+}
+
+function showCrmImportStatus(msg, ok){
+  const el = document.getElementById("crm-import-status");
+  if(!el) return;
+  el.textContent = msg;
+  el.style.color = ok ? "var(--success)" : "var(--danger)";
+}
+
+function importClientsFromExcelFile(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  if(typeof XLSX === "undefined"){
+    toast("⚠️ No se pudo cargar el lector de Excel. Revisa tu conexión a internet.", "error");
+    input.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const wb = XLSX.read(e.target.result, { type: "array", cellDates: true });
+      const sheetName = wb.SheetNames.find(n => /base de datos/i.test(n) && /natural/i.test(n)) || wb.SheetNames[0];
+      const sheet = wb.Sheets[sheetName];
+
+      const raw = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+      const headerRowIdx = raw.findIndex(r => r.includes("Nombre") && r.includes("Teléfono"));
+      if(headerRowIdx < 0){
+        showCrmImportStatus("⚠️ No se encontraron las columnas esperadas (Nombre, Teléfono...) en la hoja 'Base de datos Persona Natural'.", false);
+        input.value = "";
+        return;
+      }
+      const headers = raw[headerRowIdx];
+      const dataRows = raw.slice(headerRowIdx + 1)
+        .map(r => {
+          const obj = {};
+          headers.forEach((h, i) => { obj[h] = r[i] !== undefined ? r[i] : ""; });
+          return obj;
+        })
+        .filter(r => String(r["Nombre"] || "").trim());
+
+      const result = importClientsFromRows(dataRows);
+      saveDB(DB);
+      if(adminUnlocked) renderAdminTable();
+      renderHomeDynamicValues();
+      showCrmImportStatus(`✓ Importación completa: ${result.creados} cliente(s) nuevo(s) creado(s), ${result.duplicados} ya existían (se omitieron para no duplicar), ${result.compras} compra(s) registradas en total.`, true);
+      toast(`✓ Se importaron ${result.creados} cliente(s) nuevo(s) desde el Excel.`, "success");
+    }catch(err){
+      console.error(err);
+      showCrmImportStatus("⚠️ No se pudo leer el archivo. Verifica que sea un Excel con la hoja 'Base de datos Persona Natural'.", false);
+    }finally{
+      input.value = "";
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* ---------------- EXPORTAR CLIENTES EN FORMATO CRM (Excel) ---------------- */
+// Genera un .xlsx con la MISMA estructura que espera el CRM (crm.html):
+// hoja "Base de datos Persona Natural" con fila 1 vacía, fila 2 título,
+// fila 3 encabezados y luego una fila por CADA COMPRA, más una hoja
+// "Base de datos Persona Jurídica" vacía (con sus encabezados) para que
+// el CRM no falle al leerla.
+const NAT_HEADERS_CRM = ["Fecha de compra","Nombre","Género","Identificación","Teléfono","Dirección / Localidad","Localidad","Correo Electrónico","Fecha de cumpleaños","Número de perros","Nombre de la mascota","Raza","Talla","Producto","Cantidad","Valor total de la compra","Metodo de pago","Canal de compra","Fecha de entrega","Actividad / Profesión","Calificación del servicio 1-10","Nombre del asesor(a)"];
+const JUR_HEADERS_CRM = ["Fecha de compra","Razón Social","NIT / RUC / RFC / CIF","Teléfono","Dirección / Localidad","Correo Corporativo","Talla","Producto","Cantidad","Valor total de la compra","Metodo de pago","Canal de compra","Fecha de entrega","CIIU- Actividad Economica","Calificación del servicio 1-10","Nombre del asesor(a)"];
+
+function exportClientsToCRMExcel(){
+  if(typeof XLSX === "undefined"){
+    toast("⚠️ No se pudo cargar el lector de Excel. Revisa tu conexión a internet.", "error");
+    return;
+  }
+  const natRows = [];
+  DB.clients.forEach(c => {
+    if(c.compras.length === 0){
+      natRows.push([
+        c.fechaRegistro || "", c.nombre || "", "", "", c.celular || "", "", "", c.correo || "",
+        c.fechaNacimiento || "", 1, c.mascotaNombre || "", c.raza || "", "", "(Sin compras registradas)", 0, 0,
+        "", "", "", "", "", ""
+      ]);
+    }else{
+      c.compras.forEach(p => {
+        natRows.push([
+          p.fecha || "", c.nombre || "", "", "", c.celular || "", "", "", c.correo || "",
+          c.fechaNacimiento || "", 1, c.mascotaNombre || "", c.raza || "", p.talla || "", p.producto || "",
+          p.cantidad || 0, p.valorTotal || 0, p.metodoPago || "", p.canal || "", "", "", "", p.asesor || ""
+        ]);
+      });
+    }
+  });
+
+  const natAoa = [[], ["Persona Natural"], NAT_HEADERS_CRM, ...natRows];
+  const jurAoa = [[], ["Persona Juridica"], JUR_HEADERS_CRM]; // El club no maneja Persona Jurídica.
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(natAoa), "Base de datos Persona Natural");
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(jurAoa), "Base de datos Persona Jurídica");
+
+  const fileName = `CRM_Mascotas_${todayISO()}.xlsx`;
+  XLSX.writeFile(wb, fileName);
+  toast(`✓ Excel exportado: ${natRows.length} fila(s) de ${DB.clients.length} cliente(s). Ábrelo con "🔌 Conectar BD" en tu CRM.`, "success");
+}
+
+const exportCrmBtn = document.getElementById("export-crm-btn");
+if(exportCrmBtn){
+  exportCrmBtn.addEventListener("click", exportClientsToCRMExcel);
+}
+
+/* ---------------- INICIO ---------------- */
+renderHomeDynamicValues();
+showView("view-home");
+
+</script>
+</body>
+</html>
